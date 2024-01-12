@@ -1,8 +1,14 @@
+# dependencies
 node_modules
 
+# build files
 .cache
 build
 public/build
 .env
 
+# external files
+tmp
+
+# OS generated files
 .DS_Store
