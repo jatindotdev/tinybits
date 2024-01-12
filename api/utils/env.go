@@ -31,7 +31,7 @@ func GetAddress() string {
 	port := GetEnv("PORT", "5050")
 	env := GetEnv("ENV", "development")
 
-	if env == "development" {
+	if env != "production" {
 		return fmt.Sprintf("localhost:%s", port)
 	}
 
