@@ -39,11 +39,7 @@ func GetAddress() string {
 }
 
 func LoadEnv() {
-	err := godotenv.Load()
-
-	if err != nil {
-		log.Panicf("`.env` file not found, please create one")
-	}
+	_ = godotenv.Load()
 
 	for key, value := range env {
 		if value, ok := value.(string); ok {
