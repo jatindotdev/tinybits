@@ -24,7 +24,7 @@ A URL shortener powered by Golang and Remix for efficient link management
 
 `api` - A Golang server that handles the URL shortening and redirection
 <br>
-`app` - A Remix app that provides a UI for managing the shortened URLs
+`client` - A Remix app that provides a UI for managing the shortened URLs
 
 ## Getting Started
 
@@ -55,6 +55,11 @@ go run .
 ```
 
 ### Frontend
+
+```bash
+# Change directory
+cd client
+```
 
 ```bash
 # Install dependencies
