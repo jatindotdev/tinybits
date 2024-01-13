@@ -16,6 +16,7 @@ func init() {
 
 func main() {
 	app := echo.New()
+	app.Validator = utils.NewValidator()
 
 	middlewares.SetupMiddlewares(app)
 	routes.SetupRoutes(app)
