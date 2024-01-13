@@ -18,6 +18,9 @@ A URL shortener powered by Golang and Remix for efficient link management
   </a>
 </p>
 
+> [!IMPORTANT]
+> WIP! I am building it bit by bit and It's not ready yet
+
 ## Structure
 
 `TinyBits` consists of two parts:
