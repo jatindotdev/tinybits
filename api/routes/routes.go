@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/jatindotdev/tinybits/api/handlers"
 	"github.com/labstack/echo/v4"
 )
 
@@ -33,10 +34,13 @@ func healthCheck(c echo.Context) error {
 	})
 }
 
-func SetupRoutes(app *echo.Echo) {
+func SetupRoutes(app *echo.Echo, linkHandler *handlers.LinkHandler) {
 	app.GET("/", root)
 	app.GET("/health", healthCheck)
 
 	api := app.Group("/api")
-	ShortnerRoutes(api)
+
+	api.POST("/link", linkHandler.ShortenURL)
+	api.GET("/link/:id", linkHandler.GetShortenedURL)
+	api.GET("/link/:id/stats", linkHandler.GetShortenedURLStats)
 }

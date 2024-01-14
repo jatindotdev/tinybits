@@ -22,15 +22,18 @@ type CreateLinkResponse struct {
 	Link *Link `json:"link" validate:"required"`
 }
 
+type GetLinkRequest struct {
+	ShortCode string `json:"shortCode" validate:"required,alphanum,min=3,max=10"`
+}
+
 type GetLinkResponse struct {
 	Link *Link `json:"link"`
 }
 
-type GetLinkStatsResponse struct {
-	Link *Link `json:"link" validate:"required"`
+type GetLinkStatsRequest struct {
+	ShortCode string `json:"shortCode" validate:"required,alphanum,min=3,max=10"`
 }
 
-type GetLinkStatsRequest struct {
-	StartDate time.Time `json:"startDate" validate:"required"`
-	EndDate   time.Time `json:"endDate" validate:"required"`
+type GetLinkStatsResponse struct {
+	// TODO: Implement
 }

@@ -9,8 +9,9 @@ import (
 )
 
 var env = map[string]any{
-	"PORT": "5050",
-	"ENV":  "development",
+	"PORT":         "5050",
+	"ENV":          "development",
+	"DATABASE_URL": nil,
 }
 
 func GetEnv(key string, fallback ...string) string {
@@ -27,7 +28,7 @@ func GetEnv(key string, fallback ...string) string {
 	return value
 }
 
-func GetAddress() string {
+func GetServerAddress() string {
 	port := GetEnv("PORT", "5050")
 	env := GetEnv("ENV", "development")
 
@@ -39,7 +40,7 @@ func GetAddress() string {
 }
 
 func LoadEnv() {
-	_ = godotenv.Load()
+	godotenv.Load()
 
 	for key, value := range env {
 		if value, ok := value.(string); ok {
