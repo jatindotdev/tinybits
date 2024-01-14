@@ -26,8 +26,18 @@ func (h *LinkHandler) ShortenURL(c echo.Context) error {
 		return err
 	}
 
+	shortCode, err := h.storage.CreateNewLink(link, c.RealIP())
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, utils.Error{
+			Code:    "INTERNAL_SERVER_ERROR",
+			Message: "Something went wrong",
+			Details: err.Error(),
+		})
+	}
+
 	return c.JSON(http.StatusOK, map[string]any{
-		"link": link,
+		"shortCode": shortCode,
 	})
 }
 

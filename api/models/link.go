@@ -15,25 +15,13 @@ type Link struct {
 
 type CreateLinkRequest struct {
 	OriginalURL string `json:"originalURL" validate:"required,url"`
-	ShortCode   string `json:"shortCode,omitempty" validate:"omitempty,alphanum,min=3,max=10"`
-}
-
-type CreateLinkResponse struct {
-	Link *Link `json:"link" validate:"required"`
+	ShortCode   string `json:"shortCode,omitempty" validate:"omitempty,alphanum,min=3,max=11"`
 }
 
 type GetLinkRequest struct {
-	ShortCode string `json:"shortCode" validate:"required,alphanum,min=3,max=10"`
-}
-
-type GetLinkResponse struct {
-	Link *Link `json:"link"`
+	ShortCode string `json:"shortCode" validate:"required,alphanum,min=3,max=11"`
 }
 
 type GetLinkStatsRequest struct {
-	ShortCode string `json:"shortCode" validate:"required,alphanum,min=3,max=10"`
-}
-
-type GetLinkStatsResponse struct {
-	// TODO: Implement
+	ShortCode string `json:"shortCode" validate:"required,alphanum,min=3,max=11"`
 }
