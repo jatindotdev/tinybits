@@ -1,6 +1,8 @@
 package storage
 
 import (
+	"database/sql"
+
 	"github.com/jatindotdev/tinybits/api/models"
 	"github.com/jmoiron/sqlx"
 	gonanoid "github.com/matoous/go-nanoid/v2"
@@ -37,3 +39,16 @@ func (s *LinkStorage) CreateNewLink(link *models.CreateLinkRequest, creatorIPAdd
 
 	return &link.ShortCode, nil
 }
+
+func (s *LinkStorage) GetLinkByShortCode(shortCode string) (*models.Link, error) {
+	link := new(models.Link)
+
+	err := s.db.Get(link, "SELECT * FROM links WHERE short_code = $1", shortCode)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return link, nil
+}
+

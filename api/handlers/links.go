@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/jatindotdev/tinybits/api/models"
@@ -20,13 +21,13 @@ func NewLinkHandler(storage *storage.LinkStorage) *LinkHandler {
 }
 
 func (h *LinkHandler) ShortenURL(c echo.Context) error {
-	link := new(models.CreateLinkRequest)
+	body := new(models.CreateLinkRequest)
 
-	if err := utils.BindAndValidate(c, link); err != nil {
+	if err := utils.BindAndValidate(c, body); err != nil {
 		return err
 	}
 
-	shortCode, err := h.storage.CreateNewLink(link, c.RealIP())
+	shortCode, err := h.storage.CreateNewLink(body, c.RealIP())
 
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, utils.Error{
@@ -42,10 +43,29 @@ func (h *LinkHandler) ShortenURL(c echo.Context) error {
 }
 
 func (h *LinkHandler) GetShortenedURL(c echo.Context) error {
-	link := new(models.GetLinkRequest)
+	body := new(models.GetLinkRequest)
 
-	if err := utils.BindAndValidate(c, link); err != nil {
+	body.ShortCode = c.Param("id")
+
+	if err := c.Validate(body); err != nil {
 		return err
+	}
+
+	link, err := h.storage.GetLinkByShortCode(body.ShortCode)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return echo.NewHTTPError(http.StatusNotFound, utils.Error{
+				Code:    "NOT_FOUND",
+				Message: "Link not found",
+			})
+		}
+
+		return echo.NewHTTPError(http.StatusInternalServerError, utils.Error{
+			Code:    "INTERNAL_SERVER_ERROR",
+			Message: "Something went wrong",
+			Details: err.Error(),
+		})
 	}
 
 	return c.JSON(http.StatusOK, map[string]any{
