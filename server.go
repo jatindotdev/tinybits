@@ -10,16 +10,20 @@ import (
 	"github.com/jatindotdev/tinybits/api/routes"
 	"github.com/jatindotdev/tinybits/api/storage"
 	"github.com/jatindotdev/tinybits/api/utils"
+	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/fx"
 )
 
-func createServer(linkHandler *handlers.LinkHandler) *echo.Echo {
+func createServer(linkHandler *handlers.LinkHandler, db *sqlx.DB) *echo.Echo {
 	app := echo.New()
 	app.Validator = utils.NewValidator()
 
 	middlewares.SetupMiddlewares(app)
-	routes.SetupRoutes(app, linkHandler)
+	routes.SetupHelperRoutes(app, db)
+
+	api := app.Group("/api")
+	routes.SetupRoutes(api, linkHandler)
 
 	return app
 }

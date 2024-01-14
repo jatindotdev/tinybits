@@ -5,6 +5,8 @@ import (
 	"time"
 
 	"github.com/jatindotdev/tinybits/api/handlers"
+	"github.com/jatindotdev/tinybits/api/utils"
+	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
 )
 
@@ -34,13 +36,26 @@ func healthCheck(c echo.Context) error {
 	})
 }
 
-func SetupRoutes(app *echo.Echo, linkHandler *handlers.LinkHandler) {
+func SetupHelperRoutes(app *echo.Echo, db *sqlx.DB) {
 	app.GET("/", root)
 	app.GET("/health", healthCheck)
+	app.GET("/ping-db", func(c echo.Context) error {
+		if err := db.Ping(); err != nil {
+			return c.JSON(http.StatusInternalServerError, utils.Error{
+				Message: "Database is not up and running",
+				Code:    utils.DatabaseError,
+				Details: err.Error(),
+			})
+		}
 
-	api := app.Group("/api")
+		return c.JSON(http.StatusOK, map[string]any{
+			"ahoy": "Database is up and running!",
+		})
+	})
+}
 
-	api.POST("/link", linkHandler.ShortenURL)
-	api.GET("/link/:id", linkHandler.GetShortenedURL)
-	api.GET("/link/:id/stats", linkHandler.GetShortenedURLStats)
+func SetupRoutes(app *echo.Group, linkHandler *handlers.LinkHandler) {
+	app.POST("/link", linkHandler.ShortenURL)
+	app.GET("/link/:id", linkHandler.GetShortenedURL)
+	app.GET("/link/:id/stats", linkHandler.GetShortenedURLStats)
 }
