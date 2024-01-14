@@ -1,0 +1,17 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+  dev:
+    cmds:
+      - air
+    silent: true
+  migrate:
+    cmds:
+      - go run migrations/migrate.go up
+    silent: true
+  db-status:
+    cmds:
+      - go run migrations/migrate.go status
+    silent: true

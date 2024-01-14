@@ -3,14 +3,14 @@ package models
 import "time"
 
 type Link struct {
-	ID            string    `json:"id"`
-	OriginalURL   string    `json:"originalURL"`
-	ShortCode     string    `json:"shortCode"`
-	Visits        int       `json:"visits"`
-	CreatorIpAddr string    `json:"creatorIpAddr"`
-	Enabled       bool      `json:"enabled"`
-	CreatedAt     time.Time `json:"createdAt"`
-	UpdatedAt     time.Time `json:"updatedAt"`
+	ID               string    `json:"id"`
+	OriginalURL      string    `json:"originalURL"`
+	ShortCode        string    `json:"shortCode"`
+	Visits           int       `json:"visits"`
+	CreatorIpAddress string    `json:"creatorIpAddress"`
+	Enabled          bool      `json:"enabled"`
+	CreatedAt        time.Time `json:"createdAt"`
+	UpdatedAt        time.Time `json:"updatedAt"`
 }
 
 type CreateLinkRequest struct {
