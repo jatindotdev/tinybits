@@ -102,6 +102,37 @@ func (h *LinkHandler) ToggleLinkEnabledState(c echo.Context) error {
 	return c.NoContent(http.StatusOK)
 }
 
+func (h *LinkHandler) UpdateShortendLinkURL(c echo.Context) error {
+	body := new(models.UpdateLinkRequest)
+
+	body.ShortCode = c.Param("id")
+
+	if err := utils.BindAndValidate(c, body); err != nil {
+		return err
+	}
+
+	// TODO: validate the new URL is not redirecting to the same short code
+
+	err := h.storage.UpdateShortendLinkURL(body.ShortCode, body.OriginalURL)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return echo.NewHTTPError(http.StatusNotFound, utils.Error{
+				Code:    "NOT_FOUND",
+				Message: "Link not found",
+			})
+		}
+
+		return echo.NewHTTPError(http.StatusInternalServerError, utils.Error{
+			Code:    "INTERNAL_SERVER_ERROR",
+			Message: "Something went wrong",
+			Details: err.Error(),
+		})
+	}
+
+	return c.NoContent(http.StatusOK)
+}
+
 func (h *LinkHandler) GetShortenedURLStats(c echo.Context) error {
 	link := new(models.GetLinkStatsRequest)
 

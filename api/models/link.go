@@ -22,6 +22,11 @@ type GetLinkRequest struct {
 	ShortCode string `json:"shortCode" validate:"required,alpha,min=3,max=11"`
 }
 
+type UpdateLinkRequest struct {
+	ShortCode   string `json:"shortCode" validate:"required,alpha,min=3,max=11"`
+	OriginalURL string `json:"originalURL" validate:"required,url"`
+}
+
 type GetLinkStatsRequest struct {
 	ShortCode string `json:"shortCode" validate:"required,alpha,min=3,max=11"`
 }
