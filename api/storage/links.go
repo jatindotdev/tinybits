@@ -53,7 +53,7 @@ func (s *LinkStorage) GetLinkByShortCode(shortCode string) (*models.Link, error)
 }
 
 func (s *LinkStorage) ToggleLinkEnabledState(shortCode string) error {
-	statement := "UPDATE links SET enabled = NOT enabled WHERE short_code = $1 RETURNING *"
+	statement := "UPDATE links SET enabled = NOT enabled WHERE short_code = $1"
 
 	result, err := s.db.Exec(statement, shortCode)
 
