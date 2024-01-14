@@ -58,4 +58,5 @@ func SetupRoutes(app *echo.Group, linkHandler *handlers.LinkHandler) {
 	app.POST("/link", linkHandler.ShortenURL)
 	app.GET("/link/:id", linkHandler.GetShortenedURL)
 	app.GET("/link/:id/stats", linkHandler.GetShortenedURLStats)
+	app.POST("/link/:id/toggle", linkHandler.ToggleLinkEnabledState)
 }

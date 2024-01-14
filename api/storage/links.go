@@ -52,3 +52,24 @@ func (s *LinkStorage) GetLinkByShortCode(shortCode string) (*models.Link, error)
 	return link, nil
 }
 
+func (s *LinkStorage) ToggleLinkEnabledState(shortCode string) error {
+	statement := "UPDATE links SET enabled = NOT enabled WHERE short_code = $1 RETURNING *"
+
+	result, err := s.db.Exec(statement, shortCode)
+
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return sql.ErrNoRows
+	}
+
+	return nil
+}

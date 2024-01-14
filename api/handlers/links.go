@@ -73,6 +73,35 @@ func (h *LinkHandler) GetShortenedURL(c echo.Context) error {
 	})
 }
 
+func (h *LinkHandler) ToggleLinkEnabledState(c echo.Context) error {
+	body := new(models.GetLinkRequest)
+
+	body.ShortCode = c.Param("id")
+
+	if err := c.Validate(body); err != nil {
+		return err
+	}
+
+	err := h.storage.ToggleLinkEnabledState(body.ShortCode)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return echo.NewHTTPError(http.StatusNotFound, utils.Error{
+				Code:    "NOT_FOUND",
+				Message: "Link not found",
+			})
+		}
+
+		return echo.NewHTTPError(http.StatusInternalServerError, utils.Error{
+			Code:    "INTERNAL_SERVER_ERROR",
+			Message: "Something went wrong",
+			Details: err.Error(),
+		})
+	}
+
+	return c.NoContent(http.StatusOK)
+}
+
 func (h *LinkHandler) GetShortenedURLStats(c echo.Context) error {
 	link := new(models.GetLinkStatsRequest)
 
@@ -81,6 +110,7 @@ func (h *LinkHandler) GetShortenedURLStats(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, map[string]any{
-		"link": link,
+		"todo": "This endpoint is not implemented yet",
+		"what": "This endpoint will return the stats/analytics for a given link",
 	})
 }
