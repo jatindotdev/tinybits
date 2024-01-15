@@ -8,7 +8,8 @@ CREATE TABLE IF NOT EXISTS links (
   creator_ip_address text not null,
   enabled boolean not null default true,
   created_at timestamp without time zone not null default now(),
-  updated_at timestamp without time zone not null default now()
+  updated_at timestamp without time zone not null default now(),
+  constraint links_pkey primary key (id)
 );
 -- +goose StatementEnd
 
