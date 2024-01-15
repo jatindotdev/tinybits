@@ -48,6 +48,7 @@ func main() {
 			handlers.NewLinkHandler,
 			storage.NewLinkStorage,
 			db.CreatePostgresConnection,
+			db.CreateRedisClient,
 			createServer,
 		),
 		fx.Invoke(

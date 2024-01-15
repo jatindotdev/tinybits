@@ -9,9 +9,11 @@ import (
 )
 
 var env = map[string]any{
-	"PORT":         "5050",
-	"ENV":          "development",
-	"DATABASE_URL": nil,
+	"PORT":           "5050",
+	"ENV":            "development",
+	"DATABASE_URL":   nil,
+	"REDIS_HOST":     nil,
+	"REDIS_PASSWORD": nil,
 }
 
 func GetEnv(key string, fallback ...string) string {

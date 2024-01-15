@@ -11,6 +11,10 @@ tasks:
     cmds:
       - go run migrations/migrate.go up
     silent: true
+  db-rollback:
+    cmds:
+      - go run migrations/migrate.go down
+    silent: true
   db-status:
     cmds:
       - go run migrations/migrate.go status
