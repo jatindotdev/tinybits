@@ -12,15 +12,16 @@ import (
 	"github.com/jatindotdev/tinybits/api/utils"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
+	"github.com/redis/go-redis/v9"
 	"go.uber.org/fx"
 )
 
-func createServer(linkHandler *handlers.LinkHandler, db *sqlx.DB) *echo.Echo {
+func createServer(linkHandler *handlers.LinkHandler, db *sqlx.DB, redis *redis.Client) *echo.Echo {
 	app := echo.New()
 	app.Validator = utils.NewValidator()
 
 	middlewares.SetupMiddlewares(app)
-	routes.SetupHelperRoutes(app, db)
+	routes.SetupHelperRoutes(app, db, redis)
 
 	api := app.Group("/api")
 	routes.SetupRoutes(api, linkHandler)

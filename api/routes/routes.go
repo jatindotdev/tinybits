@@ -1,13 +1,14 @@
 package routes
 
 import (
+	"context"
 	"net/http"
 	"time"
 
 	"github.com/jatindotdev/tinybits/api/handlers"
-	"github.com/jatindotdev/tinybits/api/utils"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
+	"github.com/redis/go-redis/v9"
 )
 
 var StartTime time.Time
@@ -36,20 +37,33 @@ func healthCheck(c echo.Context) error {
 	})
 }
 
-func SetupHelperRoutes(app *echo.Echo, db *sqlx.DB) {
+func SetupHelperRoutes(app *echo.Echo, db *sqlx.DB, redis *redis.Client) {
 	app.GET("/", root)
 	app.GET("/health", healthCheck)
 	app.GET("/ping-db", func(c echo.Context) error {
+		postgresStatus := true
+		redisStatus := true
+
 		if err := db.Ping(); err != nil {
-			return c.JSON(http.StatusInternalServerError, utils.Error{
-				Message: "Database is not up and running",
-				Code:    utils.DatabaseError,
-				Details: err.Error(),
+			postgresStatus = false
+		}
+
+		if err := redis.Ping(context.Background()).Err(); err != nil {
+			redisStatus = false
+		}
+
+		if !postgresStatus || !redisStatus {
+			return c.JSON(http.StatusInternalServerError, map[string]any{
+				"ahoy":     "Database is down!",
+				"postgres": postgresStatus,
+				"redis":    redisStatus,
 			})
 		}
 
 		return c.JSON(http.StatusOK, map[string]any{
-			"ahoy": "Database is up and running!",
+			"ahoy":     "Database up and running!",
+			"postgres": postgresStatus,
+			"redis":    redisStatus,
 		})
 	})
 }
