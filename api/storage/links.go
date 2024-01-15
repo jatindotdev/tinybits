@@ -43,7 +43,7 @@ func (s *LinkStorage) CreateNewLink(link *models.CreateLinkRequest, creatorIPAdd
 func (s *LinkStorage) GetLinkByShortCode(shortCode string) (*models.Link, error) {
 	link := new(models.Link)
 
-	err := s.db.Get(link, "SELECT * FROM links WHERE short_code = $1", shortCode)
+	err := s.db.Get(link, "UPDATE links SET visits = visits + 1 WHERE short_code = $1 RETURNING *", shortCode)
 
 	if err != nil {
 		return nil, err
@@ -54,28 +54,6 @@ func (s *LinkStorage) GetLinkByShortCode(shortCode string) (*models.Link, error)
 
 func (s *LinkStorage) ToggleLinkEnabledState(shortCode string) error {
 	statement := "UPDATE links SET enabled = NOT enabled, updated_at = NOW() WHERE short_code = $1"
-
-	result, err := s.db.Exec(statement, shortCode)
-
-	if err != nil {
-		return err
-	}
-
-	rowsAffected, err := result.RowsAffected()
-
-	if err != nil {
-		return err
-	}
-
-	if rowsAffected == 0 {
-		return sql.ErrNoRows
-	}
-
-	return nil
-}
-
-func (s *LinkStorage) IncrementLinkVisits(shortCode string) error {
-	statement := "UPDATE links SET visits = visits + 1, updated_at = NOW() WHERE short_code = $1"
 
 	result, err := s.db.Exec(statement, shortCode)
 
