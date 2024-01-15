@@ -136,7 +136,9 @@ func (h *LinkHandler) UpdateShortendLinkURL(c echo.Context) error {
 func (h *LinkHandler) GetShortenedURLStats(c echo.Context) error {
 	link := new(models.GetLinkStatsRequest)
 
-	if err := utils.BindAndValidate(c, link); err != nil {
+	link.ShortCode = c.Param("id")
+
+	if err := c.Validate(link); err != nil {
 		return err
 	}
 
