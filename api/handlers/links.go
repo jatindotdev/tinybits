@@ -2,12 +2,14 @@ package handlers
 
 import (
 	"database/sql"
+	"errors"
 	"net/http"
 
+	"github.com/jatindotdev/tinybits/api/lib"
 	"github.com/jatindotdev/tinybits/api/models"
 	"github.com/jatindotdev/tinybits/api/storage"
-	"github.com/jatindotdev/tinybits/api/utils"
 	"github.com/labstack/echo/v4"
+	"github.com/lib/pq"
 )
 
 type LinkHandler struct {
@@ -23,14 +25,23 @@ func NewLinkHandler(storage *storage.LinkStorage) *LinkHandler {
 func (h *LinkHandler) ShortenURL(c echo.Context) error {
 	body := new(models.CreateLinkRequest)
 
-	if err := utils.BindAndValidate(c, body); err != nil {
+	if err := lib.BindAndValidate(c, body); err != nil {
 		return err
 	}
 
 	shortCode, err := h.storage.CreateNewLink(body, c.RealIP())
 
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, utils.Error{
+		if err, ok := err.(*pq.Error); ok {
+			if err.Code == "23505" {
+				return echo.NewHTTPError(http.StatusConflict, lib.Error{
+					Code:    lib.DupilcateShortCode,
+					Message: "Short code already exists",
+				})
+			}
+		}
+
+		return echo.NewHTTPError(http.StatusInternalServerError, lib.Error{
 			Code:    "INTERNAL_SERVER_ERROR",
 			Message: "Something went wrong",
 			Details: err.Error(),
@@ -54,14 +65,14 @@ func (h *LinkHandler) GetShortenedURL(c echo.Context) error {
 	link, err := h.storage.GetLinkByShortCode(body.ShortCode)
 
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return echo.NewHTTPError(http.StatusNotFound, utils.Error{
+		if errors.Is(err, sql.ErrNoRows) {
+			return echo.NewHTTPError(http.StatusNotFound, lib.Error{
 				Code:    "NOT_FOUND",
 				Message: "Link not found",
 			})
 		}
 
-		return echo.NewHTTPError(http.StatusInternalServerError, utils.Error{
+		return echo.NewHTTPError(http.StatusInternalServerError, lib.Error{
 			Code:    "INTERNAL_SERVER_ERROR",
 			Message: "Something went wrong",
 			Details: err.Error(),
@@ -86,13 +97,13 @@ func (h *LinkHandler) ToggleLinkEnabledState(c echo.Context) error {
 
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return echo.NewHTTPError(http.StatusNotFound, utils.Error{
+			return echo.NewHTTPError(http.StatusNotFound, lib.Error{
 				Code:    "NOT_FOUND",
 				Message: "Link not found",
 			})
 		}
 
-		return echo.NewHTTPError(http.StatusInternalServerError, utils.Error{
+		return echo.NewHTTPError(http.StatusInternalServerError, lib.Error{
 			Code:    "INTERNAL_SERVER_ERROR",
 			Message: "Something went wrong",
 			Details: err.Error(),
@@ -102,28 +113,28 @@ func (h *LinkHandler) ToggleLinkEnabledState(c echo.Context) error {
 	return c.NoContent(http.StatusOK)
 }
 
-func (h *LinkHandler) UpdateShortendLinkURL(c echo.Context) error {
+func (h *LinkHandler) UpdateShortendLink(c echo.Context) error {
 	body := new(models.UpdateLinkRequest)
 
 	body.ShortCode = c.Param("id")
 
-	if err := utils.BindAndValidate(c, body); err != nil {
+	if err := lib.BindAndValidate(c, body); err != nil {
 		return err
 	}
 
 	// TODO: validate the new URL is not redirecting to the same short code
 
-	err := h.storage.UpdateShortendLinkURL(body.ShortCode, body.OriginalURL)
+	err := h.storage.UpdateShortendLink(body.ShortCode, body.OriginalURL)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return echo.NewHTTPError(http.StatusNotFound, utils.Error{
+			return echo.NewHTTPError(http.StatusNotFound, lib.Error{
 				Code:    "NOT_FOUND",
 				Message: "Link not found",
 			})
 		}
 
-		return echo.NewHTTPError(http.StatusInternalServerError, utils.Error{
+		return echo.NewHTTPError(http.StatusInternalServerError, lib.Error{
 			Code:    "INTERNAL_SERVER_ERROR",
 			Message: "Something went wrong",
 			Details: err.Error(),

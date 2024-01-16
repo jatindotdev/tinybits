@@ -3,9 +3,10 @@ package storage
 import (
 	"database/sql"
 
+	"github.com/jatindotdev/tinybits/api/db"
+	"github.com/jatindotdev/tinybits/api/lib"
 	"github.com/jatindotdev/tinybits/api/models"
 	"github.com/jmoiron/sqlx"
-	gonanoid "github.com/matoous/go-nanoid/v2"
 )
 
 type LinkStorage struct {
@@ -19,10 +20,9 @@ func NewLinkStorage(db *sqlx.DB) *LinkStorage {
 }
 
 func (s *LinkStorage) CreateNewLink(link *models.CreateLinkRequest, creatorIPAddress string) (*string, error) {
-	statement := "INSERT INTO links (original_url, short_code, creator_ip_address) VALUES ($1, $2, $3)"
 
 	if link.ShortCode == "" {
-		id, err := gonanoid.Generate("abcdefghijklmnopqrstuvwxyz", 6)
+		id, err := lib.GenerateShortCode()
 
 		if err != nil {
 			return nil, err
@@ -31,7 +31,7 @@ func (s *LinkStorage) CreateNewLink(link *models.CreateLinkRequest, creatorIPAdd
 		link.ShortCode = id
 	}
 
-	_, err := s.db.Exec(statement, link.OriginalURL, link.ShortCode, creatorIPAddress)
+	_, err := s.db.Exec(db.CreateLink, link.OriginalURL, link.ShortCode, creatorIPAddress)
 
 	if err != nil {
 		return nil, err
@@ -43,7 +43,7 @@ func (s *LinkStorage) CreateNewLink(link *models.CreateLinkRequest, creatorIPAdd
 func (s *LinkStorage) GetLinkByShortCode(shortCode string) (*models.Link, error) {
 	link := new(models.Link)
 
-	err := s.db.Get(link, "UPDATE links SET visits = visits + 1 WHERE short_code = $1 RETURNING *", shortCode)
+	err := s.db.Get(link, db.GetLinkByShortCode, shortCode)
 
 	if err != nil {
 		return nil, err
@@ -53,9 +53,7 @@ func (s *LinkStorage) GetLinkByShortCode(shortCode string) (*models.Link, error)
 }
 
 func (s *LinkStorage) ToggleLinkEnabledState(shortCode string) error {
-	statement := "UPDATE links SET enabled = NOT enabled, updated_at = NOW() WHERE short_code = $1"
-
-	result, err := s.db.Exec(statement, shortCode)
+	result, err := s.db.Exec(db.ToggleLinkEnabledState, shortCode)
 
 	if err != nil {
 		return err
@@ -74,10 +72,8 @@ func (s *LinkStorage) ToggleLinkEnabledState(shortCode string) error {
 	return nil
 }
 
-func (s *LinkStorage) UpdateShortendLinkURL(shortCode string, newURL string) error {
-	statement := "UPDATE links SET original_url = $1, updated_at = NOW() WHERE short_code = $2"
-
-	result, err := s.db.Exec(statement, newURL, shortCode)
+func (s *LinkStorage) UpdateShortendLink(shortCode string, newURL string) error {
+	result, err := s.db.Exec(db.UpdateShortendLinkURL, newURL, shortCode)
 
 	if err != nil {
 		return err
