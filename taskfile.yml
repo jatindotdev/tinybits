@@ -7,7 +7,7 @@ tasks:
     cmds:
       - air
     silent: true
-  migrate:
+  db-migrate:
     cmds:
       - go run migrations/migrate.go up
     silent: true
