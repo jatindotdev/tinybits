@@ -71,7 +71,7 @@ func SetupHelperRoutes(app *echo.Echo, db *sqlx.DB, redis *redis.Client) {
 func SetupRoutes(app *echo.Group, linkHandler *handlers.LinkHandler) {
 	app.POST("/link", linkHandler.ShortenURL)
 	app.GET("/link/:id", linkHandler.GetShortenedURL)
-	app.PUT("/link/:id", linkHandler.UpdateShortendLinkURL)
+	app.PUT("/link/:id", linkHandler.UpdateShortendLink)
 	app.POST("/link/:id/toggle", linkHandler.ToggleLinkEnabledState)
 
 	// TODO: Implement this
