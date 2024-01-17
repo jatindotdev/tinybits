@@ -1,21 +1,26 @@
 package storage
 
 import (
+	"context"
 	"database/sql"
 
 	"github.com/jatindotdev/tinybits/api/db"
 	"github.com/jatindotdev/tinybits/api/lib"
 	"github.com/jatindotdev/tinybits/api/models"
+	"github.com/jatindotdev/tinybits/api/utils"
 	"github.com/jmoiron/sqlx"
+	"github.com/redis/go-redis/v9"
 )
 
 type LinkStorage struct {
-	db *sqlx.DB
+	db    *sqlx.DB
+	redis *redis.Client
 }
 
-func NewLinkStorage(db *sqlx.DB) *LinkStorage {
+func NewLinkStorage(db *sqlx.DB, redis *redis.Client) *LinkStorage {
 	return &LinkStorage{
-		db: db,
+		db:    db,
+		redis: redis,
 	}
 }
 
@@ -43,11 +48,21 @@ func (s *LinkStorage) CreateNewLink(link *models.CreateLinkRequest, creatorIPAdd
 func (s *LinkStorage) GetLinkByShortCode(shortCode string) (*models.Link, error) {
 	link := new(models.Link)
 
-	err := s.db.Get(link, db.GetLinkByShortCode, shortCode)
+	ctx := context.Background()
+
+	err := s.redis.Get(ctx, shortCode).Scan(link)
+
+	if err == nil {
+		return link, nil
+	}
+
+	err = s.db.Get(link, db.GetLinkByShortCode, shortCode)
 
 	if err != nil {
 		return nil, err
 	}
+
+	_ = s.redis.Set(ctx, shortCode, link, utils.OneWeek)
 
 	return link, nil
 }
@@ -69,6 +84,8 @@ func (s *LinkStorage) ToggleLinkEnabledState(shortCode string) error {
 		return sql.ErrNoRows
 	}
 
+	_ = s.redis.Del(context.Background(), shortCode)
+
 	return nil
 }
 
@@ -88,6 +105,8 @@ func (s *LinkStorage) UpdateShortendLink(shortCode string, newURL string) error 
 	if rowsAffected == 0 {
 		return sql.ErrNoRows
 	}
+
+	_ = s.redis.Del(context.Background(), shortCode)
 
 	return nil
 }

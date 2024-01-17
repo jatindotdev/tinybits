@@ -32,7 +32,7 @@ func (h *LinkHandler) ShortenURL(c echo.Context) error {
 
 	url, _ := url.Parse(body.OriginalURL)
 
-	if url.Path[1:] == body.ShortCode {
+	if len(url.Path) > 1 && url.Path[1:] == body.ShortCode {
 		return echo.NewHTTPError(http.StatusConflict, lib.Error{
 			Code:    lib.InvalidShortCode,
 			Message: "Original URL can't match the Shortened URL",
@@ -134,7 +134,7 @@ func (h *LinkHandler) UpdateShortendLink(c echo.Context) error {
 
 	url, _ := url.Parse(body.OriginalURL)
 
-	if url.Path[1:] == body.ShortCode {
+	if len(url.Path) > 1 && url.Path[1:] == body.ShortCode {
 		return echo.NewHTTPError(http.StatusConflict, lib.Error{
 			Code:    lib.InvalidShortCode,
 			Message: "Original URL can't match the Shortened URL",

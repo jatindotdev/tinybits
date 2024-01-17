@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 type Link struct {
 	OriginalURL      string    `json:"originalURL" db:"original_url"`
@@ -14,6 +17,14 @@ type Link struct {
 	ExpiresAt        time.Time `json:"expiresAt" db:"expires_at"`
 	CreatedAt        time.Time `json:"createdAt" db:"created_at"`
 	UpdatedAt        time.Time `json:"updatedAt" db:"updated_at"`
+}
+
+func (l *Link) MarshalBinary() ([]byte, error) {
+	return json.Marshal(l)
+}
+
+func (l *Link) UnmarshalBinary(data []byte) error {
+	return json.Unmarshal(data, l)
 }
 
 type CreateLinkRequest struct {
