@@ -29,6 +29,15 @@ func (h *LinkHandler) ShortenURL(c echo.Context) error {
 		return err
 	}
 
+	url, _ := url.Parse(body.OriginalURL)
+
+	if url.Path[1:] == body.ShortCode {
+		return echo.NewHTTPError(http.StatusConflict, lib.Error{
+			Code:    lib.InvalidShortCode,
+			Message: "Original URL can't match the Shortened URL",
+		})
+	}
+
 	shortCode, err := h.storage.CreateNewLink(body, c.RealIP())
 
 	if err != nil {
@@ -122,7 +131,14 @@ func (h *LinkHandler) UpdateShortendLink(c echo.Context) error {
 		return err
 	}
 
-	// TODO: validate the new URL is not redirecting to the same short code
+	url, _ := url.Parse(body.OriginalURL)
+
+	if url.Path[1:] == body.ShortCode {
+		return echo.NewHTTPError(http.StatusConflict, lib.Error{
+			Code:    lib.InvalidShortCode,
+			Message: "Original URL can't match the Shortened URL",
+		})
+	}
 
 	err := h.storage.UpdateShortendLink(body.ShortCode, body.OriginalURL)
 
