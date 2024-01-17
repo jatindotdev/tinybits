@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
+	"net/url"
 
 	"github.com/jatindotdev/tinybits/api/lib"
 	"github.com/jatindotdev/tinybits/api/models"
@@ -51,7 +52,7 @@ func (h *LinkHandler) ShortenURL(c echo.Context) error {
 		}
 
 		return echo.NewHTTPError(http.StatusInternalServerError, lib.Error{
-			Code:    "INTERNAL_SERVER_ERROR",
+			Code:    lib.InternalError,
 			Message: "Something went wrong",
 			Details: err.Error(),
 		})
@@ -76,13 +77,13 @@ func (h *LinkHandler) GetShortenedURL(c echo.Context) error {
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return echo.NewHTTPError(http.StatusNotFound, lib.Error{
-				Code:    "NOT_FOUND",
+				Code:    lib.NotFound,
 				Message: "Link not found",
 			})
 		}
 
 		return echo.NewHTTPError(http.StatusInternalServerError, lib.Error{
-			Code:    "INTERNAL_SERVER_ERROR",
+			Code:    lib.InternalError,
 			Message: "Something went wrong",
 			Details: err.Error(),
 		})
@@ -107,13 +108,13 @@ func (h *LinkHandler) ToggleLinkEnabledState(c echo.Context) error {
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return echo.NewHTTPError(http.StatusNotFound, lib.Error{
-				Code:    "NOT_FOUND",
+				Code:    lib.NotFound,
 				Message: "Link not found",
 			})
 		}
 
 		return echo.NewHTTPError(http.StatusInternalServerError, lib.Error{
-			Code:    "INTERNAL_SERVER_ERROR",
+			Code:    lib.InternalError,
 			Message: "Something went wrong",
 			Details: err.Error(),
 		})
@@ -145,13 +146,13 @@ func (h *LinkHandler) UpdateShortendLink(c echo.Context) error {
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return echo.NewHTTPError(http.StatusNotFound, lib.Error{
-				Code:    "NOT_FOUND",
+				Code:    lib.NotFound,
 				Message: "Link not found",
 			})
 		}
 
 		return echo.NewHTTPError(http.StatusInternalServerError, lib.Error{
-			Code:    "INTERNAL_SERVER_ERROR",
+			Code:    lib.InternalError,
 			Message: "Something went wrong",
 			Details: err.Error(),
 		})
