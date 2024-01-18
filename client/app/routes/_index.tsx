@@ -3,7 +3,7 @@ import { Button } from '~/components/ui/button';
 
 export default function Index() {
   return (
-    <div className="h-screen flex flex-col justify-center items-center gap-1">
+    <div className="flex flex-col justify-center items-center gap-1 mt-[30vh]">
       <h1 className="text-3xl font-bold">TinyBits</h1>
       <p>
         A URL shortener powered by Golang and Remix for efficient link
