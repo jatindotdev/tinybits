@@ -1,5 +1,9 @@
 import { cssBundleHref } from '@remix-run/css-bundle';
-import type { LinksFunction, MetaFunction } from '@remix-run/node';
+import type {
+  LinksFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from '@remix-run/node';
 import {
   Links,
   LiveReload,
@@ -7,9 +11,12 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  json,
+  useLoaderData,
 } from '@remix-run/react';
 import styles from './tailwind.css';
 import { Nav } from './components/nav';
+import { authenticator } from './service/auth.server';
 
 export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: styles },
@@ -95,7 +102,15 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+export async function loader({ request }: LoaderFunctionArgs) {
+  const user = await authenticator.isAuthenticated(request);
+
+  return json({ user });
+}
+
 export default function App() {
+  const { user } = useLoaderData<typeof loader>();
+
   return (
     <html lang="en">
       <head>
@@ -105,7 +120,7 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Nav />
+        <Nav user={user} />
         <Outlet />
         <ScrollRestoration />
         <Scripts />

@@ -4,6 +4,6 @@ import { authenticator } from '../service/auth.server';
 export async function loader({ request }: LoaderFunctionArgs) {
   return authenticator.authenticate('github', request, {
     successRedirect: '/',
-    failureRedirect: '/login',
+    failureRedirect: '/',
   });
 }

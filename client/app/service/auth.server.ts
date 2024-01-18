@@ -17,7 +17,6 @@ const gitHubStrategy = new GitHubStrategy(
     callbackURL: 'http://localhost:3000/auth/github/callback',
   },
   async ({ accessToken, extraParams, profile }) => {
-    // do db stuff here
     console.log({ accessToken, extraParams, profile });
     return profile;
   }
