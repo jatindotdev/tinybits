@@ -9,6 +9,8 @@ import {
   ScrollRestoration,
 } from '@remix-run/react';
 import { Background } from './components/background';
+import { Toaster } from './components/ui/sonner';
+import { TooltipProvider } from './components/ui/tooltip';
 import styles from './tailwind.css';
 
 export const links: LinksFunction = () => [
@@ -105,11 +107,14 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Background />
-        <Outlet />
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
+        <TooltipProvider>
+          <Toaster />
+          <Background />
+          <Outlet />
+          <ScrollRestoration />
+          <Scripts />
+          <LiveReload />
+        </TooltipProvider>
       </body>
     </html>
   );

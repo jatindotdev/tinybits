@@ -47,8 +47,8 @@ export function Nav({ user }: NavProps) {
         )}
         {user && (
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Avatar className="size-9 border border-border">
+            <DropdownMenuTrigger asChild className="select-none cursor-pointer">
+              <Avatar className="border border-border active:scale-90 transition">
                 <AvatarImage src={user?.photos[0].value} />
                 <AvatarFallback className="font-medium">
                   {user?.name.givenName[0]}
