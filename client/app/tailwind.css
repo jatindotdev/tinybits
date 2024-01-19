@@ -69,9 +69,21 @@
 @layer base {
   * {
     @apply border-border;
+    min-width: 0;
   }
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
   }
 }

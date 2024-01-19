@@ -1,6 +1,6 @@
 import { Authenticator } from 'remix-auth';
-import { sessionStorage } from './session.server';
 import { GitHubStrategy, type GitHubProfile } from 'remix-auth-github';
+import { sessionStorage } from './session.server';
 
 if (!process.env.GITHUB_CLIENT_ID) {
   throw new Error('Missing GITHUB_CLIENT_ID environment variable');
@@ -20,8 +20,7 @@ const gitHubStrategy = new GitHubStrategy(
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
     callbackURL: process.env.GITHUB_CALLBACK_URL,
   },
-  async ({ accessToken, extraParams, profile }) => {
-    console.log({ accessToken, extraParams, profile });
+  async ({ profile }) => {
     return profile;
   }
 );

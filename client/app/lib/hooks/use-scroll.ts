@@ -17,7 +17,5 @@ export function useScroll(threshold: number) {
     onScroll();
   }, [onScroll]);
 
-  console.log('scrolled', scrolled);
-
   return scrolled;
 }
