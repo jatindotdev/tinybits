@@ -5,43 +5,44 @@ import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@remix-run/node';
-import { Form, useLoaderData } from '@remix-run/react';
-import { CornerDownLeftIcon, Link2Icon } from 'lucide-react';
+import { Form, Link, useLoaderData } from '@remix-run/react';
+import { ArrowRightIcon, CornerDownLeftIcon, Link2Icon } from 'lucide-react';
 import { LinkCard } from '~/components/link-card';
 import { Nav } from '~/components/nav';
 import { Button } from '~/components/ui/button';
 import { Section } from '~/components/ui/section';
-import type { Link } from '~/lib/types';
+import type { Link as LinkType } from '~/lib/types';
 import { authenticator } from '~/service/auth.server';
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await authenticator.isAuthenticated(request);
-  const links: Link[] = [
+  const date = new Date();
+  const links: LinkType[] = [
     {
       id: 1,
-      originalURL: 'https://jatinkumar.dev',
+      originalURL: 'https://github.com/jatindotdev',
       shortCode: 'jatindotdev',
       visits: 1996,
       creatorIpAddress: '192.168.0.1',
       hasPassword: true,
       password: '',
       enabled: true,
-      hasExpiration: true,
-      expiresAt: new Date().toISOString(),
+      hasExpiration: false,
+      expiresAt: '2024-01-20T11:43:06.097Z',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     },
     {
       id: 2,
       originalURL: 'https://jatinkumar.dev',
-      shortCode: 'jatindotdev',
+      shortCode: 'try',
       visits: 0,
       creatorIpAddress: '192.168.0.1',
       hasPassword: true,
       password: '',
       enabled: true,
       hasExpiration: true,
-      expiresAt: new Date().toISOString(),
+      expiresAt: '2024-01-20T15:13:26.848Z',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     },
@@ -109,6 +110,11 @@ export default function Index() {
             </div>
           </Form>
           <div className="mt-3 grid gap-2">{linkCards}</div>
+          <Button className="mt-3 gap-1" asChild>
+            <Link to="/dashboard">
+              Go to Dashboard <ArrowRightIcon className="size-[1.125rem]" />
+            </Link>
+          </Button>
         </div>
       </Section>
     </>
