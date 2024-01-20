@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS links (
   creator_ip_address text not null,
   enabled boolean not null default true,
   has_password boolean not null default false,
-  password text not null default ''::text,
+  hashed_password text not null default ''::text,
   has_expiration boolean not null default false,
   expires_at timestamp with time zone not null default (now() at time zone 'utc'::text),
   created_at timestamp with time zone not null default (now() at time zone 'utc'::text),

@@ -11,7 +11,7 @@ type Link struct {
 	Visits           int       `json:"visits" db:"visits"`
 	CreatorIpAddress string    `json:"creatorIpAddress" db:"creator_ip_address"`
 	HasPassword      bool      `json:"hasPassword" db:"has_password"`
-	Password         string    `json:"password" db:"password"`
+	HashedPassword   string    `json:"hashedPassword" db:"hashed_password"`
 	Enabled          bool      `json:"enabled" db:"enabled"`
 	HasExpiration    bool      `json:"hasExpiration" db:"has_expiration"`
 	ExpiresAt        time.Time `json:"expiresAt" db:"expires_at"`
