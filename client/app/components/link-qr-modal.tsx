@@ -204,11 +204,11 @@ function AdvancedSettings({
   }, 100);
 
   return (
-    <div>
+    <>
       <div className="px-4 sm:px-16">
         <button
           type="button"
-          className="flex items-center"
+          className="flex items-center focus:outline-none focus:underline underline-offset-2"
           onClick={() => setExpanded(!expanded)}
         >
           <ChevronRightIcon
@@ -278,7 +278,7 @@ function AdvancedSettings({
           </div>
         </motion.div>
       )}
-    </div>
+    </>
   );
 }
 
