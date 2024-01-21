@@ -8,8 +8,8 @@ import {
   Scripts,
   ScrollRestoration,
 } from '@remix-run/react';
+import { Toaster } from '~/components/ui/sonner';
 import { Background } from './components/background';
-import { Toaster } from './components/ui/sonner';
 import { TooltipProvider } from './components/ui/tooltip';
 import styles from './tailwind.css';
 

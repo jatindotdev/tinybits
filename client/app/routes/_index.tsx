@@ -16,7 +16,6 @@ import { authenticator } from '~/service/auth.server';
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await authenticator.isAuthenticated(request);
-  const date = new Date();
   const links: LinkType[] = [
     {
       id: 1,
@@ -34,6 +33,20 @@ export async function loader({ request }: LoaderFunctionArgs) {
     },
     {
       id: 2,
+      originalURL: 'https://jatinkumar.dev',
+      shortCode: 'try',
+      visits: 0,
+      creatorIpAddress: '192.168.0.1',
+      hasPassword: true,
+      password: '',
+      enabled: true,
+      hasExpiration: true,
+      expiresAt: '2024-01-20T15:13:26.848Z',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: 3,
       originalURL: 'https://jatinkumar.dev',
       shortCode: 'try',
       visits: 0,
