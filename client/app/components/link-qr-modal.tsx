@@ -35,8 +35,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
-import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Switch } from './ui/switch';
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
 export interface QRLinkProps {
   key: string;
@@ -245,8 +245,8 @@ function AdvancedSettings({
               Foreground Color
             </label>
             <div className="relative mt-1 flex h-9 w-48 rounded-md shadow-sm">
-              <Popover modal>
-                <PopoverTrigger>
+              <Tooltip delayDuration={0}>
+                <TooltipTrigger asChild>
                   <div
                     className="h-full w-12 rounded-l-md border"
                     style={{
@@ -254,16 +254,17 @@ function AdvancedSettings({
                       borderColor: qrData.fgColor,
                     }}
                   />
-                  <PopoverContent>
-                    <div className="flex max-w-xs flex-col items-center space-y-3 p-5 text-center">
-                      <HexColorPicker
-                        color={qrData.fgColor}
-                        onChange={debouncedSetFgColor}
-                      />
-                    </div>
-                  </PopoverContent>
-                </PopoverTrigger>
-              </Popover>
+                </TooltipTrigger>
+                <TooltipContent
+                  sideOffset={10}
+                  className="bg-white max-w-sm shadow-md border p-5 rounded-lg"
+                >
+                  <HexColorPicker
+                    color={qrData.fgColor}
+                    onChange={debouncedSetFgColor}
+                  />
+                </TooltipContent>
+              </Tooltip>
               <HexColorInput
                 id="color"
                 name="color"
