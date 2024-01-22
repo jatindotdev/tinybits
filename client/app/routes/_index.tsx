@@ -7,6 +7,8 @@ import {
 } from '@remix-run/node';
 import { Form, Link, useLoaderData } from '@remix-run/react';
 import { ArrowRightIcon, CornerDownLeftIcon, Link2Icon } from 'lucide-react';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
 import { LinkCard } from '~/components/link-card';
 import { Nav } from '~/components/nav';
 import { Button } from '~/components/ui/button';
@@ -17,10 +19,17 @@ import { authenticator } from '~/service/auth.server';
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await authenticator.isAuthenticated(request);
-  const defaultLink = await getLinkByShortCode('jatindotdev');
-  const links: LinkType[] = [defaultLink];
+  let links: LinkType[] = [];
+  let error: unknown = null;
 
-  return json({ user, links });
+  try {
+    const defaultLink = await getLinkByShortCode('jatindotdev');
+    links = [defaultLink];
+  } catch (err) {
+    error = err;
+  }
+
+  return json({ user, links, error });
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -31,7 +40,13 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function Index() {
-  const { user, links } = useLoaderData<typeof loader>();
+  const { user, links, error } = useLoaderData<typeof loader>();
+
+  useEffect(() => {
+    if (error) {
+      toast.error('Loki is sad. Please try again later.');
+    }
+  }, [error]);
 
   const linkCards = links.map(link => {
     return <LinkCard key={link.shortCode} link={link} />;
