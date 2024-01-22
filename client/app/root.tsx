@@ -37,8 +37,8 @@ export const meta: MetaFunction = () => {
     {
       tagName: 'link',
       rel: 'icon',
-      href: '/logo.png',
-      type: 'image/png',
+      href: '/logo.svg',
+      type: 'image/svg+xml',
     },
     {
       name: 'description',
