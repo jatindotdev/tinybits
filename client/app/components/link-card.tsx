@@ -5,7 +5,7 @@ import {
   TimerOffIcon,
   Trash2,
 } from 'lucide-react';
-import { forwardRef } from 'react';
+import { forwardRef, useMemo } from 'react';
 import { GOOGLE_FAVICON_URL } from '~/lib/constants';
 import type { Link as LinkType } from '~/lib/types';
 import { cn, formatNumber, hasExpired, timeRemaining } from '~/lib/utils';
@@ -21,7 +21,9 @@ type LinkCardProps = JSX.IntrinsicElements['div'] & {
 
 const LinkCard = forwardRef<HTMLDivElement, LinkCardProps>(
   ({ link, ...props }, ref) => {
-    const shortLink = `https://tinybits.vercel.app/${link.shortCode}`;
+    const shortLink = useMemo(() => {
+      return `https://tinybits.vercel.app/${link.shortCode}`;
+    }, [link.shortCode]);
     const isLinkExpired = link.hasExpiration && hasExpired(link.expiresAt);
     const { LinkQRModal } = useQRCodeModal({
       key: link.shortCode,

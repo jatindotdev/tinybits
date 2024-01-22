@@ -49,11 +49,10 @@ export function QRCodePicker({
 }) {
   const anchorRef = useRef<HTMLAnchorElement>(null);
 
-  const qrLogoURL = useMemo(() => {
-    return typeof window !== 'undefined' && window.location.origin
-      ? new URL('/logo.png', window.location.origin).href
-      : 'https://tinybits.vercel.app/logo.png';
-  }, []);
+  const logoURL = 'https://tinybits.vercel.app/logo.svg';
+  const shortLink = useMemo(() => {
+    return `https://tinybits.vercel.app/${props.key}`;
+  }, [props.key]);
 
   function download(url: string, extension: string) {
     if (!anchorRef.current) return;
@@ -67,21 +66,21 @@ export function QRCodePicker({
 
   const qrData = useMemo(
     () => ({
-      value: `https://tinybits.vercel.app/${props.key}`,
+      value: shortLink,
       bgColor: '#ffffff',
       fgColor,
       size: 1024,
       level: 'Q', // QR Code error correction level: https://blog.qrstuff.com/general/qr-code-error-correction
       ...(showLogo && {
         imageSettings: {
-          src: qrLogoURL,
+          src: logoURL,
           height: 256,
           width: 256,
           excavate: true,
         },
       }),
     }),
-    [props, fgColor, showLogo, qrLogoURL]
+    [showLogo, fgColor, shortLink]
   );
 
   const [copied, setCopied] = useState(false);
@@ -99,7 +98,7 @@ export function QRCodePicker({
     <>
       <div className="flex flex-col items-center justify-center space-y-3 border-b border-gray-200 px-4 py-4 pt-8 sm:px-16">
         <Avatar>
-          <AvatarImage src="/logo.png" />
+          <AvatarImage src="/logo.svg" />
         </Avatar>
         <h3 className="text-lg font-medium">Download QR Code</h3>
       </div>
@@ -159,13 +158,13 @@ export function QRCodePicker({
             download={download}
             qrData={qrData}
             showLogo={showLogo}
-            logo={qrLogoURL}
+            logo={logoURL}
           />
         </div>
 
         {/* This will be used to prompt downloads. */}
         <a
-          href="/logo.png"
+          href="/logo.svg"
           className="hidden"
           download={'qrcode.svg'}
           ref={anchorRef}
@@ -309,7 +308,7 @@ function QrDropdown({ download, qrData, showLogo, logo }: QRDropdownProps) {
                 ...(showLogo && {
                   imageSettings: {
                     ...qrData.imageSettings,
-                    src: logo || 'https://dub.co/_static/logo.svg',
+                    src: logo || 'https://jatindotdev.vercel.app/logo.svg',
                   },
                 }),
               }),
