@@ -524,7 +524,7 @@ export async function getQRAsCanvas(props: QRProps) {
   return canvas;
 }
 
-export async function getQRDataUri(props: QRProps, type: string) {
+export async function getQRAsUri(props: QRProps, type: string) {
   const canvas = await getQRAsCanvas(props);
   const url = canvas.toDataURL(type, 1.0);
   canvas.remove();

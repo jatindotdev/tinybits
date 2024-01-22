@@ -11,55 +11,14 @@ import { LinkCard } from '~/components/link-card';
 import { Nav } from '~/components/nav';
 import { Button } from '~/components/ui/button';
 import { Section } from '~/components/ui/section';
+import { getLinkByShortCode } from '~/lib/api/links';
 import type { Link as LinkType } from '~/lib/types';
 import { authenticator } from '~/service/auth.server';
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await authenticator.isAuthenticated(request);
-  const links: LinkType[] = [
-    {
-      id: 1,
-      originalURL: 'https://github.com/jatindotdev',
-      shortCode: 'jatindotdev',
-      visits: 1996,
-      creatorIpAddress: '192.168.0.1',
-      hasPassword: true,
-      password: '',
-      enabled: true,
-      hasExpiration: false,
-      expiresAt: '2024-01-20T11:43:06.097Z',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 2,
-      originalURL: 'https://jatinkumar.dev',
-      shortCode: 'try',
-      visits: 0,
-      creatorIpAddress: '192.168.0.1',
-      hasPassword: true,
-      password: '',
-      enabled: true,
-      hasExpiration: true,
-      expiresAt: '2024-01-20T15:13:26.848Z',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 3,
-      originalURL: 'https://jatinkumar.dev',
-      shortCode: 'try',
-      visits: 0,
-      creatorIpAddress: '192.168.0.1',
-      hasPassword: true,
-      password: '',
-      enabled: true,
-      hasExpiration: true,
-      expiresAt: '2024-01-20T15:13:26.848Z',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-  ];
+  const defaultLink = await getLinkByShortCode('jatindotdev');
+  const links: LinkType[] = [defaultLink];
 
   return json({ user, links });
 }
@@ -75,7 +34,7 @@ export default function Index() {
   const { user, links } = useLoaderData<typeof loader>();
 
   const linkCards = links.map(link => {
-    return <LinkCard key={link.id} link={link} />;
+    return <LinkCard key={link.shortCode} link={link} />;
   });
 
   return (

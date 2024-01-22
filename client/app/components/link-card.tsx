@@ -22,7 +22,9 @@ type LinkCardProps = JSX.IntrinsicElements['div'] & {
 const LinkCard = forwardRef<HTMLDivElement, LinkCardProps>(
   ({ link, ...props }, ref) => {
     const shortLink = useMemo(() => {
-      return `https://tinybits.vercel.app/${link.shortCode}`;
+      return typeof window !== 'undefined' && window.location.origin
+        ? new URL(link.shortCode, window.location.origin).href
+        : `https://tinybits.vercel.app/${link.shortCode}`;
     }, [link.shortCode]);
     const isLinkExpired = link.hasExpiration && hasExpired(link.expiresAt);
     const { LinkQRModal } = useQRCodeModal({

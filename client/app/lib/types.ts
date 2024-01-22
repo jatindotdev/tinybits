@@ -1,5 +1,4 @@
 export interface Link {
-  id: number;
   originalURL: string;
   shortCode: string;
   visits: number;

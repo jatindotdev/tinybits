@@ -27,6 +27,7 @@
     "clsx": "^2.1.0",
     "framer-motion": "^10.18.0",
     "isbot": "^4.1.0",
+    "ky": "^1.2.0",
     "lucide-react": "^0.312.0",
     "next-themes": "^0.2.1",
     "react": "^18.2.0",

@@ -23,7 +23,7 @@ import {
   QRCodeSVG,
   getQRAsCanvas,
   getQRAsSVGDataUri,
-  getQRDataUri as getQRAsUri,
+  getQRAsUri,
   type QRProps,
 } from '~/lib/qr/qr';
 import { Avatar, AvatarImage } from './ui/avatar';
@@ -49,9 +49,11 @@ export function QRCodePicker({
 }) {
   const anchorRef = useRef<HTMLAnchorElement>(null);
 
-  const logoURL = 'https://tinybits.vercel.app/logo.svg';
+  const logoURL = '/logo.svg';
   const shortLink = useMemo(() => {
-    return `https://tinybits.vercel.app/${props.key}`;
+    return typeof window !== 'undefined' && window.location.origin
+      ? new URL(props.key, window.location.origin).href
+      : `https://tinybits.vercel.app/${props.key}`;
   }, [props.key]);
 
   function download(url: string, extension: string) {
@@ -98,7 +100,7 @@ export function QRCodePicker({
     <>
       <div className="flex flex-col items-center justify-center space-y-3 border-b border-gray-200 px-4 py-4 pt-8 sm:px-16">
         <Avatar>
-          <AvatarImage src="/logo.svg" />
+          <AvatarImage src={logoURL} />
         </Avatar>
         <h3 className="text-lg font-medium">Download QR Code</h3>
       </div>
@@ -164,7 +166,7 @@ export function QRCodePicker({
 
         {/* This will be used to prompt downloads. */}
         <a
-          href="/logo.svg"
+          href={logoURL}
           className="hidden"
           download={'qrcode.svg'}
           ref={anchorRef}
