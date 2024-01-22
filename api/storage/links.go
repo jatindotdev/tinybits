@@ -110,3 +110,19 @@ func (s *LinkStorage) UpdateShortendLink(shortCode string, newURL string) error 
 
 	return nil
 }
+
+func (s *LinkStorage) UpdateVisitAndReturnRedirectLink(shortCode string) (*models.Link, error) {
+	link := new(models.Link)
+
+	ctx := context.Background()
+
+	err := s.db.Get(link, db.UpdateVisitAndReturnLink, shortCode)
+
+	if err != nil {
+		return nil, err
+	}
+
+	_ = s.redis.Set(ctx, shortCode, link, utils.OneWeek)
+
+	return link, nil
+}

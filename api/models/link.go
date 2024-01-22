@@ -32,7 +32,7 @@ type CreateLinkRequest struct {
 	ShortCode   string `json:"shortCode,omitempty" validate:"omitempty,alpha,min=3,max=11"`
 }
 
-type GetLinkRequest struct {
+type ShortCodeRequest struct {
 	ShortCode string `json:"shortCode" validate:"required,alpha,min=3,max=11"`
 }
 
@@ -41,8 +41,4 @@ type UpdateLinkRequest struct {
 	OriginalURL string `json:"originalURL" validate:"required,url"`
 	Password    string `json:"password,omitempty" validate:"omitempty,min=8"`
 	ExpiresAt   string `json:"expiresAt,omitempty" validate:"omitempty,datetime"`
-}
-
-type GetLinkStatsRequest struct {
-	ShortCode string `json:"shortCode" validate:"required,alpha,min=3,max=11"`
 }

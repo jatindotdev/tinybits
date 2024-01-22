@@ -64,7 +64,7 @@ func (h *LinkHandler) ShortenURL(c echo.Context) error {
 }
 
 func (h *LinkHandler) GetShortenedURL(c echo.Context) error {
-	body := new(models.GetLinkRequest)
+	body := new(models.ShortCodeRequest)
 
 	body.ShortCode = c.Param("id")
 
@@ -94,8 +94,39 @@ func (h *LinkHandler) GetShortenedURL(c echo.Context) error {
 	})
 }
 
+func (h *LinkHandler) UpdateVisitAndReturnLink(c echo.Context) error {
+	body := new(models.ShortCodeRequest)
+
+	body.ShortCode = c.Param("id")
+
+	if err := c.Validate(body); err != nil {
+		return err
+	}
+
+	link, err := h.storage.UpdateVisitAndReturnRedirectLink(body.ShortCode)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return echo.NewHTTPError(http.StatusNotFound, lib.Error{
+				Code:    lib.NotFound,
+				Message: "Link not found",
+			})
+		}
+
+		return echo.NewHTTPError(http.StatusInternalServerError, lib.Error{
+			Code:    lib.InternalError,
+			Message: "Something went wrong",
+			Details: err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, map[string]any{
+		"link": link,
+	})
+}
+
 func (h *LinkHandler) ToggleLinkEnabledState(c echo.Context) error {
-	body := new(models.GetLinkRequest)
+	body := new(models.ShortCodeRequest)
 
 	body.ShortCode = c.Param("id")
 
@@ -162,7 +193,7 @@ func (h *LinkHandler) UpdateShortendLink(c echo.Context) error {
 }
 
 func (h *LinkHandler) GetShortenedURLStats(c echo.Context) error {
-	link := new(models.GetLinkStatsRequest)
+	link := new(models.ShortCodeRequest)
 
 	link.ShortCode = c.Param("id")
 
