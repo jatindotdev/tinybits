@@ -1,8 +1,8 @@
 import { DashboardIcon, ExitIcon } from '@radix-ui/react-icons';
 import { Form, Link } from '@remix-run/react';
-import type { GitHubProfile } from 'remix-auth-github';
 import { useScroll } from '~/lib/hooks/use-scroll';
 import { cn } from '~/lib/utils';
+import type { GitHubProfile } from '~/service/github-strategy';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Button } from './ui/button';
 import {
