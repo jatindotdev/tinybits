@@ -70,10 +70,10 @@ dependencies:
     version: 18.2.0(react@18.2.0)
   remix-auth:
     specifier: ^3.6.0
-    version: 3.6.0(@remix-run/react@2.5.0)(@remix-run/server-runtime@1.19.3)
-  remix-auth-github:
-    specifier: ^1.6.0
-    version: 1.6.0(@remix-run/server-runtime@1.19.3)(remix-auth@3.6.0)
+    version: 3.6.0(@remix-run/react@2.5.0)(@remix-run/server-runtime@2.5.0)
+  remix-auth-oauth2:
+    specifier: ^1.11.1
+    version: 1.11.1(@remix-run/server-runtime@2.5.0)(remix-auth@3.6.0)
   sonner:
     specifier: ^1.3.1
     version: 1.3.1(react-dom@18.2.0)(react@18.2.0)
@@ -86,9 +86,6 @@ dependencies:
   use-debounce:
     specifier: ^10.0.0
     version: 10.0.0(react@18.2.0)
-  vaul:
-    specifier: ^0.8.7
-    version: 0.8.7(@types/react-dom@18.2.18)(@types/react@18.2.47)(react-dom@18.2.0)(react@18.2.0)
 
 devDependencies:
   '@biomejs/biome':
@@ -1992,11 +1989,6 @@ packages:
     resolution: {integrity: sha512-ACXpdMM9hmKZww21yEqWwiLws/UPLhNKvimN8RrYSqPSvB3ov7sLvAcfvaxePeLvccTQKGdkDIhLYApZVDFuKg==}
     engines: {node: '>=14.0.0'}
 
-  /@remix-run/router@1.7.2:
-    resolution: {integrity: sha512-7Lcn7IqGMV+vizMPoEl5F0XDshcdDYtMI6uJLQdQz5CfZAwy3vvGKYSUk789qndt5dEC4HfSjviSYlSoHGL2+A==}
-    engines: {node: '>=14'}
-    dev: false
-
   /@remix-run/serve@2.5.0(typescript@5.3.3):
     resolution: {integrity: sha512-wrcYJQV8Jbx/8GM62GCLGWghuSZFQwL0RvkZOI2+zVV1lqGXYYJYWAR7JrjLF5GpMsYdfCFi3H9+Go9lpw3+cQ==}
     engines: {node: '>=18.0.0'}
@@ -2013,18 +2005,6 @@ packages:
     transitivePeerDependencies:
       - supports-color
       - typescript
-
-  /@remix-run/server-runtime@1.19.3:
-    resolution: {integrity: sha512-KzQ+htUsKqpBgKE2tWo7kIIGy3MyHP58Io/itUPvV+weDjApwr9tQr9PZDPA3yAY6rAzLax7BU0NMSYCXWFY5A==}
-    engines: {node: '>=14.0.0'}
-    dependencies:
-      '@remix-run/router': 1.7.2
-      '@types/cookie': 0.4.1
-      '@web3-storage/multipart-parser': 1.0.0
-      cookie: 0.4.2
-      set-cookie-parser: 2.6.0
-      source-map: 0.7.4
-    dev: false
 
   /@remix-run/server-runtime@2.5.0(typescript@5.3.3):
     resolution: {integrity: sha512-Lf/cflOOmx+IAZ1Kd3vKTFhXOS5cUbc2E8pjBE+5xF/1aHI+3NhqqS/haimZ+LaPa4GP8D+0lE6t2Q+2bXJXmg==}
@@ -2088,10 +2068,6 @@ packages:
     dependencies:
       '@types/estree': 1.0.5
     dev: true
-
-  /@types/cookie@0.4.1:
-    resolution: {integrity: sha512-XW/Aa8APYr6jSVVA1y/DEIZX0/GMKLEVekNG727R8cs56ahETkRAy/3DR7+fJyh7oUgGwNQaRfXCun0+KbWY7Q==}
-    dev: false
 
   /@types/cookie@0.6.0:
     resolution: {integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==}
@@ -2646,11 +2622,6 @@ packages:
   /cookie-signature@1.2.1:
     resolution: {integrity: sha512-78KWk9T26NhzXtuL26cIJ8/qNHANyJ/ZYrmEXFzUmhZdjpBv+DlWlOANRTGBt48YcyslsLrj0bMLFTmXvLRCOw==}
     engines: {node: '>=6.6.0'}
-
-  /cookie@0.4.2:
-    resolution: {integrity: sha512-aSWTXFzaKWkvHO1Ny/s+ePFpvKsPnjc551iI41v3ny/ow6tBG5Vd+FuqGNhh1LxOmVzOlGUriIlOaokOvhaStA==}
-    engines: {node: '>= 0.6'}
-    dev: false
 
   /cookie@0.5.0:
     resolution: {integrity: sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==}
@@ -4936,40 +4907,27 @@ packages:
       unified: 10.1.2
     dev: true
 
-  /remix-auth-github@1.6.0(@remix-run/server-runtime@1.19.3)(remix-auth@3.6.0):
-    resolution: {integrity: sha512-qdQmWVVEDHxnzMPn7XE0s7QX5GYba0uH3MDW+lVJiCoHDZCGymqmGCajLThL5vFJdwSx0C4GpQJ5EgEsIjQ3pA==}
-    peerDependencies:
-      '@remix-run/server-runtime': ^1.0.0
-      remix-auth: ^3.4.0
-    dependencies:
-      '@remix-run/server-runtime': 1.19.3
-      remix-auth: 3.6.0(@remix-run/react@2.5.0)(@remix-run/server-runtime@1.19.3)
-      remix-auth-oauth2: 1.11.1(@remix-run/server-runtime@1.19.3)(remix-auth@3.6.0)
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
-  /remix-auth-oauth2@1.11.1(@remix-run/server-runtime@1.19.3)(remix-auth@3.6.0):
+  /remix-auth-oauth2@1.11.1(@remix-run/server-runtime@2.5.0)(remix-auth@3.6.0):
     resolution: {integrity: sha512-eGNUB0+yiIuxansfyZM+SqpiAlsFEqOrNUr8LmxSRjx2RW/GOe/aT1fL8n+VtkcrLXPqUJWxE+GhEowF81+VDQ==}
     peerDependencies:
       '@remix-run/server-runtime': ^1.0.0 || ^2.0.0
       remix-auth: ^3.6.0
     dependencies:
-      '@remix-run/server-runtime': 1.19.3
+      '@remix-run/server-runtime': 2.5.0(typescript@5.3.3)
       debug: 4.3.4
-      remix-auth: 3.6.0(@remix-run/react@2.5.0)(@remix-run/server-runtime@1.19.3)
+      remix-auth: 3.6.0(@remix-run/react@2.5.0)(@remix-run/server-runtime@2.5.0)
     transitivePeerDependencies:
       - supports-color
     dev: false
 
-  /remix-auth@3.6.0(@remix-run/react@2.5.0)(@remix-run/server-runtime@1.19.3):
+  /remix-auth@3.6.0(@remix-run/react@2.5.0)(@remix-run/server-runtime@2.5.0):
     resolution: {integrity: sha512-mxlzLYi+/GKQSaXIqIw15dxAT1wm+93REAeDIft2unrKDYnjaGhhpapyPhdbALln86wt9lNAk21znfRss3fG7Q==}
     peerDependencies:
       '@remix-run/react': ^1.0.0 || ^2.0.0
       '@remix-run/server-runtime': ^1.0.0 || ^2.0.0
     dependencies:
       '@remix-run/react': 2.5.0(react-dom@18.2.0)(react@18.2.0)(typescript@5.3.3)
-      '@remix-run/server-runtime': 1.19.3
+      '@remix-run/server-runtime': 2.5.0(typescript@5.3.3)
       uuid: 8.3.2
     dev: false
 
@@ -5657,20 +5615,6 @@ packages:
   /vary@1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
-
-  /vaul@0.8.7(@types/react-dom@18.2.18)(@types/react@18.2.47)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-xeI/qpCnaMkFWX2s0mPXZV77WP4Cj2chjNRsegl38jp+jc32ygmIob0xaqdVur/m+AmdGs9wO60NnrlSaTWvCA==}
-    peerDependencies:
-      react: ^16.8 || ^17.0 || ^18.0
-      react-dom: ^16.8 || ^17.0 || ^18.0
-    dependencies:
-      '@radix-ui/react-dialog': 1.0.5(@types/react-dom@18.2.18)(@types/react@18.2.47)(react-dom@18.2.0)(react@18.2.0)
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-    transitivePeerDependencies:
-      - '@types/react'
-      - '@types/react-dom'
-    dev: false
 
   /vfile-message@3.1.4:
     resolution: {integrity: sha512-fa0Z6P8HUrQN4BZaX05SIVXic+7kE3b05PWAtPuYP9QLHsLKYR7/AlLW3NtOrpXRLeawpDLMsVkmk5DG0NXgWw==}

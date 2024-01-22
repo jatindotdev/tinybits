@@ -1,5 +1,5 @@
 import { Authenticator } from 'remix-auth';
-import { GitHubStrategy, type GitHubProfile } from 'remix-auth-github';
+import { GitHubStrategy, type GitHubProfile } from './github-strategy';
 import { sessionStorage } from './session.server';
 
 if (!process.env.GITHUB_CLIENT_ID) {
