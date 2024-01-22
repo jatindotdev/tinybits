@@ -10,9 +10,6 @@ const envSchema = object({
   API_BASE_URL: string('API_BASE_URL is required', [
     url('API_BASE_URL must be a valid URL'),
   ]),
-  BASE_URL: string('BASE_URL is required', [
-    url('BASE_URL must be a valid URL'),
-  ]),
 });
 
 export const env = parse(envSchema, process.env);

@@ -7,3 +7,10 @@ export const getLinkByShortCode = async (shortCode: string) => {
   }>();
   return res.link;
 };
+
+export const getRedirectUrlByShortCode = async (shortCode: string) => {
+  const res = await api.get(`link/${shortCode}/visit`).json<{
+    link: Link;
+  }>();
+  return res.link;
+};
