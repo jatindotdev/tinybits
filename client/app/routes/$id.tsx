@@ -15,6 +15,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
     return redirect(link.originalURL);
   } catch (error) {
     console.error(error);
-    return redirect('/');
+    return redirect('/?error=invalid_link');
   }
 }

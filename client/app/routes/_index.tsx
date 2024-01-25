@@ -1,13 +1,12 @@
 import { GitHubLogoIcon } from '@radix-ui/react-icons';
 import {
   defer,
-  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@remix-run/node';
 import { Await, Form, Link, useLoaderData } from '@remix-run/react';
 import { ArrowRightIcon, CornerDownLeftIcon, Link2Icon } from 'lucide-react';
-import { Suspense, useEffect } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { LinkCard, LinkCardPlaceholder } from '~/components/link-card';
 import { Nav } from '~/components/nav';
@@ -28,15 +27,26 @@ export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const url = String(formData.get('url'));
 
-  return redirect('/');
+  return null;
 }
 
 export default function Index() {
   const { link, user, healthcheck } = useLoaderData<typeof loader>();
+  const [toastId, setToastId] = useState<string | number | undefined>();
 
   useEffect(() => {
     healthcheck.catch(() => {
-      toast.error("Loki is down! We're working on it.");
+      if (toastId) {
+        toast.error('Loki is down. Please try again later.', {
+          id: toastId,
+        });
+      } else {
+        setToastId(
+          toast.error('Loki is down. Please try again later.', {
+            id: toastId,
+          })
+        );
+      }
     });
   });
 
