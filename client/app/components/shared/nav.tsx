@@ -3,8 +3,8 @@ import { Form, Link } from '@remix-run/react';
 import { useScroll } from '~/lib/hooks/use-scroll';
 import { cn } from '~/lib/utils';
 import type { GitHubProfile } from '~/service/github-strategy';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { Button } from './ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Button } from '../ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +12,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from './ui/dropdown-menu';
+} from '../ui/dropdown-menu';
 
 interface NavProps {
   user: GitHubProfile | null;

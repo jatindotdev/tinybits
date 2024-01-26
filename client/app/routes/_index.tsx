@@ -4,40 +4,81 @@ import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@remix-run/node';
-import { Await, Form, Link, useLoaderData } from '@remix-run/react';
+import {
+  Await,
+  Form,
+  Link,
+  useActionData,
+  useLoaderData,
+} from '@remix-run/react';
+import { motion } from 'framer-motion';
 import { ArrowRightIcon, CornerDownLeftIcon, Link2Icon } from 'lucide-react';
-import { Suspense, useEffect } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { LinkCard, LinkCardPlaceholder } from '~/components/link-card';
-import { Nav } from '~/components/nav';
+import { LinkCard, LinkCardPlaceholder } from '~/components/links/link-card';
+import { Nav } from '~/components/shared/nav';
 import { Button } from '~/components/ui/button';
 import { Section } from '~/components/ui/section';
 import { healthCheck } from '~/lib/api/fetcher';
 import { getLinkByShortCode } from '~/lib/api/links';
+import type { Link as LinkType } from '~/lib/types';
 import { authenticator } from '~/service/auth.server';
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const user = await authenticator.isAuthenticated(request);
-  const link = getLinkByShortCode('jatindotdev');
+
   const healthcheck = healthCheck();
-  return defer({ user, link, healthcheck });
+  const defaultLink = getLinkByShortCode('jatindotdev');
+
+  return defer({ user, defaultLink, healthcheck });
 }
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const url = String(formData.get('url'));
 
-  return null;
+  await new Promise(resolve => setTimeout(resolve, 1500));
+
+  return {
+    enabled: true,
+    createdAt: new Date().toISOString(),
+    creatorIpAddress: '127.0.0.1',
+    expiresAt: '2024-01-26T09:00:00.000Z',
+    hasExpiration: true,
+    hasPassword: false,
+    originalURL: url,
+    password: '',
+    shortCode: 'jatindotdev',
+    updatedAt: new Date().toISOString(),
+    visits: 0,
+  } as LinkType;
 }
 
+const FRAMER_MOTION_LIST_ITEM_VARIANTS = {
+  hidden: { scale: 0.8, opacity: 0 },
+  show: { scale: 1, opacity: 1, transition: { type: 'spring' } },
+};
+
 export default function Index() {
-  const { link, user, healthcheck } = useLoaderData<typeof loader>();
-  const toastId = 'loki-down';
+  const { defaultLink, user, healthcheck } = useLoaderData<typeof loader>();
+  const toastServerDown = 'loki-down';
+  const toastCreatingLink = 'creating-link';
+  const actionResult = useActionData<typeof action>();
+  const [links, setLinks] = useState<LinkType[]>([]);
+
+  useEffect(() => {
+    if (actionResult) {
+      toast.success('Link created successfully!', {
+        id: toastCreatingLink,
+      });
+      setLinks(links => [actionResult, ...links]);
+    }
+  }, [actionResult]);
 
   useEffect(() => {
     healthcheck.catch(() => {
       toast.error('Loki is down. Please try again later.', {
-        id: toastId,
+        id: toastServerDown,
       });
     });
   });
@@ -87,11 +128,40 @@ export default function Index() {
             </div>
           </Form>
           <div className="mt-3 grid gap-2">
-            <Suspense fallback={<LinkCardPlaceholder />}>
-              <Await errorElement={<LinkCardPlaceholder />} resolve={link}>
-                {link => <LinkCard link={link} />}
-              </Await>
-            </Suspense>
+            <motion.div
+              animate={{
+                ...FRAMER_MOTION_LIST_ITEM_VARIANTS.show,
+                transition: {
+                  ...FRAMER_MOTION_LIST_ITEM_VARIANTS.show.transition,
+                  delay: 0.2,
+                },
+              }}
+              initial={FRAMER_MOTION_LIST_ITEM_VARIANTS.hidden}
+            >
+              <Suspense fallback={<LinkCardPlaceholder />}>
+                <Await
+                  errorElement={<LinkCardPlaceholder />}
+                  resolve={defaultLink}
+                >
+                  {link => <LinkCard link={link} />}
+                </Await>
+              </Suspense>
+            </motion.div>
+            {links.map((link, i) => (
+              <motion.div
+                key={link.shortCode}
+                animate={{
+                  ...FRAMER_MOTION_LIST_ITEM_VARIANTS.show,
+                  transition: {
+                    ...FRAMER_MOTION_LIST_ITEM_VARIANTS.show.transition,
+                    delay: 0.2 * (i + 2),
+                  },
+                }}
+                initial={FRAMER_MOTION_LIST_ITEM_VARIANTS.hidden}
+              >
+                <LinkCard link={link} />
+              </motion.div>
+            ))}
           </div>
           <Button className="mt-3 gap-1" asChild>
             <Link to="/dashboard">

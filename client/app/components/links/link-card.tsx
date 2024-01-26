@@ -1,4 +1,3 @@
-import { Link } from '@remix-run/react';
 import {
   MousePointerClickIcon,
   TimerIcon,
@@ -9,11 +8,11 @@ import { forwardRef, useMemo } from 'react';
 import { GOOGLE_FAVICON_URL } from '~/lib/constants';
 import type { Link as LinkType } from '~/lib/types';
 import { cn, formatNumber, hasExpired, timeRemaining } from '~/lib/utils';
-import { CopyButton } from './copy-button';
+import { CopyButton } from '../copy-button';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
+import { UsageTooltip } from '../usage-tooltip';
 import { useQRCodeModal } from './link-qr-modal';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { Button } from './ui/button';
-import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
 type LinkCardProps = JSX.IntrinsicElements['div'] & {
   link: LinkType;
@@ -37,14 +36,14 @@ const LinkCard = forwardRef<HTMLDivElement, LinkCardProps>(
         className="relative flex items-center justify-between rounded-lg border-border bg-white p-3 shadow-lg hover:border-primary/75 border-[1.5px] cursor-pointer transition select-none"
       >
         {isLinkExpired ? (
-          <TooltipWrapper>
+          <UsageTooltip>
             <div className="absolute -right-2 -top-1.5 cursor-help sm:-right-5">
               <span className="max-w-fit rounded-full px-2 py-px text-xs font-medium capitalize bg-gray-200 text-primary flex items-center space-x-1 border border-gray-400">
                 <TimerOffIcon className="size-3" />
                 <p>Expired</p>
               </span>
             </div>
-          </TooltipWrapper>
+          </UsageTooltip>
         ) : (
           link.hasExpiration && (
             <div className="absolute -right-2 -top-1.5 cursor-help sm:-right-5">
@@ -75,9 +74,9 @@ const LinkCard = forwardRef<HTMLDivElement, LinkCardProps>(
               {!isLinkExpired ? (
                 link.originalURL.split('/')[2][0].toUpperCase()
               ) : (
-                <TooltipWrapper sideOffset={20}>
+                <UsageTooltip sideOffset={20}>
                   <Trash2 className="size-5 text-gray-500" />
-                </TooltipWrapper>
+                </UsageTooltip>
               )}
             </AvatarFallback>
           </Avatar>
@@ -93,11 +92,11 @@ const LinkCard = forwardRef<HTMLDivElement, LinkCardProps>(
                   {link.shortCode}
                 </a>
               ) : (
-                <TooltipWrapper>
+                <UsageTooltip>
                   <p className="font-semibold text-gray-500 line-through">
                     {link.shortCode}
                   </p>
-                </TooltipWrapper>
+                </UsageTooltip>
               )}
               <div className="flex gap-1">
                 <CopyButton text={shortLink} />
@@ -146,33 +145,6 @@ const LinkCard = forwardRef<HTMLDivElement, LinkCardProps>(
 );
 
 LinkCard.displayName = 'LinkCard';
-
-interface TooltipProps {
-  children: React.ReactNode;
-  sideOffset?: number;
-}
-
-const TooltipWrapper = ({ children, sideOffset = 8 }: TooltipProps) => {
-  return (
-    <Tooltip delayDuration={0}>
-      <TooltipTrigger asChild>{children}</TooltipTrigger>
-      <TooltipContent
-        className="font-medium text-sm bg-primary-foreground text-primary shadow"
-        sideOffset={sideOffset}
-      >
-        <div className="flex max-w-xs flex-col items-center space-y-3 p-4 text-center">
-          <p className="text-sm text-primary">
-            To prevent abuse, we automatically delete unclaimed links after 30
-            minutes. To claim this link, simply sign up for a free account.
-          </p>
-          <Button asChild className="w-full">
-            <Link to="/signup">Create your free account</Link>
-          </Button>
-        </div>
-      </TooltipContent>
-    </Tooltip>
-  );
-};
 
 const LinkCardPlaceholder = () => (
   <div className="flex items-center rounded-lg border border-border bg-white p-3 shadow-lg">

@@ -26,17 +26,17 @@ import {
   getQRAsUri,
   type QRProps,
 } from '~/lib/qr/qr';
-import { Avatar, AvatarImage } from './ui/avatar';
-import { Button } from './ui/button';
-import { Dialog, DialogContent } from './ui/dialog';
+import { Avatar, AvatarImage } from '../ui/avatar';
+import { Button } from '../ui/button';
+import { Dialog, DialogContent } from '../ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from './ui/dropdown-menu';
-import { Switch } from './ui/switch';
-import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+} from '../ui/dropdown-menu';
+import { Switch } from '../ui/switch';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 
 export interface QRLinkProps {
   key: string;
