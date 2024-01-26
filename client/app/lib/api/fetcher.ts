@@ -6,6 +6,6 @@ export const api = ky.extend({
 });
 
 export const healthCheck = async () => {
-  const res = await api.get('/health');
+  const res = await ky.get(`${env.API_BASE_URL}/health`);
   return res.status === 200;
 };
