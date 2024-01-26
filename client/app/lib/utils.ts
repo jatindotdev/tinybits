@@ -18,10 +18,6 @@ export const formatNumber = (
   }).format(number);
 };
 
-export const hasExpired = (date: string) => {
-  return new Date(date) < new Date();
-};
-
 export const timeRemaining = (date: string) => {
   const diff = new Date(date).getTime() - new Date().getTime();
   const minutes = Math.floor(diff / 1000 / 60);

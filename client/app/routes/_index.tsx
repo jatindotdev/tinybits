@@ -19,6 +19,7 @@ import { LinkCard, LinkCardPlaceholder } from '~/components/links/link-card';
 import { Nav } from '~/components/shared/nav';
 import { Button } from '~/components/ui/button';
 import { Section } from '~/components/ui/section';
+import { UsageTooltip } from '~/components/usage-tooltip';
 import { healthCheck } from '~/lib/api/fetcher';
 import { getLinkByShortCode } from '~/lib/api/links';
 import type { Link as LinkType } from '~/lib/types';
@@ -108,25 +109,29 @@ export default function Index() {
           </Button>
         </div>
         <div className="mx-auto w-full max-w-lg px-2.5 sm:px-0">
-          <Form method="post">
-            <div className="relative flex items-center">
-              <Link2Icon className="size-5 text-gray-400 absolute inset-x-0 ml-2.5" />
-              <input
-                type="url"
-                placeholder="https://github.com/jatindotdev"
-                autoComplete="off"
-                required
-                className="peer block w-full rounded-lg border-border bg-white p-2.5 pl-10 pr-12 shadow-lg focus:border-primary focus:outline-none focus:ring-0 sm:text-sm border-[1.5px] transition duration-300"
-                name="url"
-              />
-              <button
-                type="submit"
-                className="hover:border-primary hover:text-primary peer-focus:text-primary absolute inset-y-0 right-0 my-1.5 mr-1.5 flex w-10 items-center justify-center rounded-md border-[1.5px] border-border font-sans text-sm font-medium text-gray-400 transition duration-300"
-              >
-                <CornerDownLeftIcon className="size-5" strokeWidth={1.5} />
-              </button>
-            </div>
-          </Form>
+          <UsageTooltip show={links.length > 1}>
+            <Form method="post">
+              <div className="relative flex items-center">
+                <Link2Icon className="size-5 text-gray-400 absolute inset-x-0 ml-2.5" />
+                <input
+                  type="url"
+                  placeholder="https://github.com/jatindotdev"
+                  autoComplete="off"
+                  required
+                  className="peer block w-full rounded-lg border-border bg-white p-2.5 pl-10 pr-12 shadow-lg focus:border-primary focus:outline-none focus:ring-0 sm:text-sm border-[1.5px] transition duration-300"
+                  name="url"
+                  disabled={links.length > 1}
+                />
+                <button
+                  type="submit"
+                  className="hover:border-primary hover:text-primary peer-focus:text-primary absolute inset-y-0 right-0 my-1.5 mr-1.5 flex w-10 items-center justify-center rounded-md border-[1.5px] border-border font-sans text-sm font-medium text-gray-400 transition duration-300"
+                  disabled={links.length > 1}
+                >
+                  <CornerDownLeftIcon className="size-5" strokeWidth={1.5} />
+                </button>
+              </div>
+            </Form>
+          </UsageTooltip>
           <div className="mt-3 grid gap-2">
             <motion.div
               animate={{

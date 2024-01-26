@@ -5,12 +5,18 @@ import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 interface UsageTooltipProps {
   children: React.ReactNode;
   sideOffset?: number;
+  show?: boolean;
 }
 
 export const UsageTooltip = ({
   children,
   sideOffset = 8,
+  show = true,
 }: UsageTooltipProps) => {
+  if (!show) {
+    return children;
+  }
+
   return (
     <Tooltip delayDuration={0}>
       <TooltipTrigger asChild>{children}</TooltipTrigger>

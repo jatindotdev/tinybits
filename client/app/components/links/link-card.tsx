@@ -7,7 +7,7 @@ import {
 import { forwardRef, useMemo } from 'react';
 import { GOOGLE_FAVICON_URL } from '~/lib/constants';
 import type { Link as LinkType } from '~/lib/types';
-import { cn, formatNumber, hasExpired, timeRemaining } from '~/lib/utils';
+import { cn, formatNumber, timeRemaining } from '~/lib/utils';
 import { CopyButton } from '../copy-button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
@@ -25,35 +25,39 @@ const LinkCard = forwardRef<HTMLDivElement, LinkCardProps>(
         ? new URL(link.shortCode, window.location.origin).href
         : `https://tinybits.vercel.app/${link.shortCode}`;
     }, [link.shortCode]);
-    const isLinkExpired = link.hasExpiration && hasExpired(link.expiresAt);
     const { LinkQRModal } = useQRCodeModal({
       key: link.shortCode,
     });
+
+    const timeRemainingText = useMemo(() => {
+      return timeRemaining(link.expiresAt);
+    }, [link.expiresAt]);
+
+    const isLinkExpired = timeRemainingText < 0;
+
     return (
       <div
         ref={ref}
         {...props}
         className="relative flex items-center justify-between rounded-lg border-border bg-white p-3 shadow-lg hover:border-primary/75 border-[1.5px] cursor-pointer transition select-none"
       >
-        {isLinkExpired ? (
-          <UsageTooltip>
-            <div className="absolute -right-2 -top-1.5 cursor-help sm:-right-5">
-              <span className="max-w-fit rounded-full px-2 py-px text-xs font-medium capitalize bg-gray-200 text-primary flex items-center space-x-1 border border-gray-400">
-                <TimerOffIcon className="size-3" />
-                <p>Expired</p>
-              </span>
-            </div>
-          </UsageTooltip>
-        ) : (
-          link.hasExpiration && (
-            <div className="absolute -right-2 -top-1.5 cursor-help sm:-right-5">
-              <span className="max-w-fit rounded-full px-2 py-px text-xs font-medium capitalize bg-gray-200 text-primary flex items-center space-x-1 border border-gray-400">
-                <TimerIcon className="size-3" />
-                <p>Expires in {timeRemaining(link.expiresAt)}m</p>
-              </span>
-            </div>
-          )
-        )}
+        <UsageTooltip show={isLinkExpired}>
+          <div className="absolute -right-2 -top-1.5 cursor-help sm:-right-5">
+            <span className="max-w-fit rounded-full px-2 py-px text-xs font-medium capitalize bg-gray-200 text-primary flex items-center space-x-1 border border-gray-400">
+              {isLinkExpired ? (
+                <>
+                  <TimerOffIcon className="size-3" />
+                  <p>Expired</p>
+                </>
+              ) : (
+                <>
+                  <TimerIcon className="size-3" />
+                  <p>Expires in {timeRemainingText}m</p>
+                </>
+              )}
+            </span>
+          </div>
+        </UsageTooltip>
         <div className="flex items-center gap-3">
           <Avatar>
             {!isLinkExpired && (
@@ -71,33 +75,33 @@ const LinkCard = forwardRef<HTMLDivElement, LinkCardProps>(
               className={cn('h-10 w-10 rounded-full bg-gray-300')}
               aria-hidden="true"
             >
-              {!isLinkExpired ? (
-                link.originalURL.split('/')[2][0].toUpperCase()
-              ) : (
-                <UsageTooltip sideOffset={20}>
+              <UsageTooltip sideOffset={20} show={isLinkExpired}>
+                {!isLinkExpired ? (
+                  link.originalURL.split('/')[2][0].toUpperCase()
+                ) : (
                   <Trash2 className="size-5 text-gray-500" />
-                </UsageTooltip>
-              )}
+                )}
+              </UsageTooltip>
             </AvatarFallback>
           </Avatar>
           <div>
             <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
-              {!isLinkExpired ? (
-                <a
-                  className={cn('font-semibold text-blue-800')}
-                  href={shortLink}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {link.shortCode}
-                </a>
-              ) : (
-                <UsageTooltip>
+              <UsageTooltip show={isLinkExpired}>
+                {!isLinkExpired ? (
+                  <a
+                    className={cn('font-semibold text-blue-800')}
+                    href={shortLink}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {link.shortCode}
+                  </a>
+                ) : (
                   <p className="font-semibold text-gray-500 line-through">
                     {link.shortCode}
                   </p>
-                </UsageTooltip>
-              )}
+                )}
+              </UsageTooltip>
               <div className="flex gap-1">
                 <CopyButton text={shortLink} />
                 <LinkQRModal />
