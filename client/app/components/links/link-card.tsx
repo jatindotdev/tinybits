@@ -29,11 +29,13 @@ const LinkCard = forwardRef<HTMLDivElement, LinkCardProps>(
       key: link.shortCode,
     });
 
-    const timeRemainingText = useMemo(() => {
-      return timeRemaining(link.expiresAt);
-    }, [link.expiresAt]);
-
-    const isLinkExpired = timeRemainingText < 0;
+    const [timeRemainingText, isLinkExpired] = useMemo(() => {
+      const timeRemainingText = timeRemaining(link.expiresAt);
+      return [
+        timeRemainingText,
+        link.hasExpiration && timeRemainingText < 0,
+      ] as const;
+    }, [link]);
 
     return (
       <div
@@ -42,21 +44,23 @@ const LinkCard = forwardRef<HTMLDivElement, LinkCardProps>(
         className="relative flex items-center justify-between rounded-lg border-border bg-white p-3 shadow-lg hover:border-primary/75 border-[1.5px] cursor-pointer transition select-none"
       >
         <UsageTooltip show={isLinkExpired}>
-          <div className="absolute -right-2 -top-1.5 cursor-help sm:-right-5">
-            <span className="max-w-fit rounded-full px-2 py-px text-xs font-medium capitalize bg-gray-200 text-primary flex items-center space-x-1 border border-gray-400">
-              {isLinkExpired ? (
-                <>
-                  <TimerOffIcon className="size-3" />
-                  <p>Expired</p>
-                </>
-              ) : (
-                <>
-                  <TimerIcon className="size-3" />
-                  <p>Expires in {timeRemainingText}m</p>
-                </>
-              )}
-            </span>
-          </div>
+          {link.hasExpiration && (
+            <div className="absolute -right-2 -top-1.5 cursor-help sm:-right-5">
+              <span className="max-w-fit rounded-full px-2 py-px text-xs font-medium capitalize bg-gray-200 text-primary flex items-center space-x-1 border border-gray-400">
+                {isLinkExpired ? (
+                  <>
+                    <TimerOffIcon className="size-3" />
+                    <p>Expired</p>
+                  </>
+                ) : (
+                  <>
+                    <TimerIcon className="size-3" />
+                    <p>Expires in {timeRemainingText}m</p>
+                  </>
+                )}
+              </span>
+            </div>
+          )}
         </UsageTooltip>
         <div className="flex items-center gap-3">
           <Avatar>
