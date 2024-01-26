@@ -67,7 +67,6 @@ const LinkCard = forwardRef<HTMLDivElement, LinkCardProps>(
             {!isLinkExpired && (
               <AvatarImage
                 alt={link.originalURL.split('/')[2]}
-                loading="lazy"
                 width={20}
                 height={20}
                 decoding="async"

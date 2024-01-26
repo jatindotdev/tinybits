@@ -23,6 +23,7 @@ import { UsageTooltip } from '~/components/usage-tooltip';
 import { healthCheck } from '~/lib/api/fetcher';
 import { getLinkByShortCode } from '~/lib/api/links';
 import type { Link as LinkType } from '~/lib/types';
+import { cn } from '~/lib/utils';
 import { authenticator } from '~/service/auth.server';
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -45,7 +46,7 @@ export async function action({ request }: ActionFunctionArgs) {
     createdAt: new Date().toISOString(),
     creatorIpAddress: '127.0.0.1',
     expiresAt: '2024-01-26T09:00:00.000Z',
-    hasExpiration: true,
+    hasExpiration: false,
     hasPassword: false,
     originalURL: url,
     password: '',
@@ -112,13 +113,24 @@ export default function Index() {
           <UsageTooltip show={links.length > 1}>
             <Form method="post">
               <div className="relative flex items-center">
-                <Link2Icon className="size-5 text-gray-400 absolute inset-x-0 ml-2.5" />
+                {links.length < 2 && (
+                  <Link2Icon className="size-5 text-gray-400 absolute inset-x-0 ml-2.5" />
+                )}
                 <input
                   type="url"
-                  placeholder="https://github.com/jatindotdev"
+                  placeholder={
+                    links.length > 1
+                      ? 'Shorten your link'
+                      : 'https://github.com/jatindotdev'
+                  }
                   autoComplete="off"
                   required
-                  className="peer block w-full rounded-lg border-border bg-white p-2.5 pl-10 pr-12 shadow-lg focus:border-primary focus:outline-none focus:ring-0 sm:text-sm border-[1.5px] transition duration-300"
+                  className={cn(
+                    'peer block w-full rounded-lg border-border bg-white p-2.5 pr-12 shadow-lg focus:border-primary focus:outline-none focus:ring-0 sm:text-sm border-[1.5px] transition duration-300',
+                    {
+                      'pl-10': links.length < 2,
+                    }
+                  )}
                   name="url"
                   disabled={links.length > 1}
                 />
