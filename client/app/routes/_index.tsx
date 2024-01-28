@@ -194,7 +194,7 @@ export default function Index() {
               </Drawer.Trigger>
               <Drawer.Portal>
                 <Drawer.Overlay className="fixed inset-0 z-50 bg-black/80" />
-                <Drawer.Content className="fixed bottom-0 right-0 z-50 mt-24 flex h-full w-[400px] flex-col rounded-l-[10px] border bg-background p-4">
+                <Drawer.Content className="fixed bottom-0 right-0 z-50 mt-24 flex h-full max-w-md flex-col rounded-l-[10px] border bg-background p-4">
                   <div className="flex justify-between items-end border-b pb-2">
                     <h2 className="text-xl font-medium tracking-tight first:mt-0">
                       {user?.github?.name}'s Links
@@ -203,7 +203,7 @@ export default function Index() {
                   </div>
                   <div className="w-2 h-[100px] rounded-full bg-muted fixed inset-x-0 top-1/2 translate-x-1/2 left-2" />
                   <div className="mt-3 grid gap-2">
-                    <div className="w-max mx-auto">
+                    <div className="mx-auto">
                       <Suspense fallback={<LinkCardPlaceholder />}>
                         <Await
                           errorElement={<LinkCardPlaceholder />}
