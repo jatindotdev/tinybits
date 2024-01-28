@@ -63,6 +63,7 @@ const FRAMER_MOTION_LIST_ITEM_VARIANTS = {
 
 export default function Index() {
   const { defaultLink, user, healthcheck } = useLoaderData<typeof loader>();
+  const [isServerDown, setIsServerDown] = useState(false);
   const toastServerDown = 'loki-down';
   const toastCreatingLink = 'creating-link';
   const actionResult = useActionData<typeof action>();
@@ -78,11 +79,19 @@ export default function Index() {
   }, [actionResult]);
 
   useEffect(() => {
-    healthcheck.catch(() => {
-      toast.error('Loki is down. Please try again later.', {
-        id: toastServerDown,
-      });
-    });
+    (async () => {
+      const isServerDown = !(await healthcheck);
+      if (isServerDown) {
+        toast.error('Loki is down! Please try again later.', {
+          id: toastServerDown,
+          duration: Infinity,
+          dismissible: false,
+        });
+      } else {
+        toast.dismiss(toastServerDown);
+      }
+      setIsServerDown(isServerDown);
+    })();
   });
 
   return (
@@ -119,7 +128,7 @@ export default function Index() {
                 <input
                   type="url"
                   placeholder={
-                    links.length > 1
+                    links.length > 1 || isServerDown
                       ? 'Shorten your link'
                       : 'https://github.com/jatindotdev'
                   }
@@ -132,12 +141,12 @@ export default function Index() {
                     }
                   )}
                   name="url"
-                  disabled={links.length > 1}
+                  disabled={links.length > 1 || isServerDown}
                 />
                 <button
                   type="submit"
                   className="hover:border-primary hover:text-primary peer-focus:text-primary absolute inset-y-0 right-0 my-1.5 mr-1.5 flex w-10 items-center justify-center rounded-md border-[1.5px] border-border font-sans text-sm font-medium text-gray-400 transition duration-300"
-                  disabled={links.length > 1}
+                  disabled={links.length > 1 || isServerDown}
                 >
                   <CornerDownLeftIcon className="size-5" strokeWidth={1.5} />
                 </button>
