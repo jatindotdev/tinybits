@@ -4,22 +4,18 @@ import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@remix-run/node';
-import {
-  Await,
-  Form,
-  Link,
-  useActionData,
-  useLoaderData,
-} from '@remix-run/react';
+import { Await, Form, useActionData, useLoaderData } from '@remix-run/react';
 import { motion } from 'framer-motion';
 import { ArrowRightIcon, CornerDownLeftIcon, Link2Icon } from 'lucide-react';
 import { Suspense, useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { Drawer } from 'vaul';
 import { LinkCard, LinkCardPlaceholder } from '~/components/links/link-card';
 import { Nav } from '~/components/shared/nav';
 import { Button } from '~/components/ui/button';
 import { Section } from '~/components/ui/section';
 import { UsageTooltip } from '~/components/usage-tooltip';
+import { UserAvatar } from '~/components/user-avatar';
 import { healthCheck } from '~/lib/api/fetcher';
 import { getLinkByShortCode } from '~/lib/api/links';
 import type { Link as LinkType } from '~/lib/types';
@@ -118,7 +114,7 @@ export default function Index() {
             </a>
           </Button>
         </div>
-        <div className="mx-auto w-full max-w-lg px-2.5 sm:px-0">
+        <div className="mx-auto w-full max-w-lg px-2.5 sm:px-0 relative">
           <UsageTooltip show={links.length > 1}>
             <Form method="post">
               <div className="relative flex items-center">
@@ -189,11 +185,44 @@ export default function Index() {
               </motion.div>
             ))}
           </div>
-          <Button className="mt-3 gap-1" asChild>
-            <Link to="/dashboard">
-              Go to Dashboard <ArrowRightIcon className="size-[1.125rem]" />
-            </Link>
-          </Button>
+          {user && (
+            <Drawer.Root direction="right" shouldScaleBackground>
+              <Drawer.Trigger asChild>
+                <Button className="mt-3 gap-1 absolute right-0">
+                  Open Links Panel <ArrowRightIcon className="size-4" />
+                </Button>
+              </Drawer.Trigger>
+              <Drawer.Portal>
+                <Drawer.Overlay className="fixed inset-0 z-50 bg-black/80" />
+                <Drawer.Content className="fixed bottom-0 right-0 z-50 mt-24 flex h-full w-[400px] flex-col rounded-l-[10px] border bg-background p-4">
+                  <div className="flex justify-between items-end border-b pb-2">
+                    <h2 className="text-xl font-medium tracking-tight first:mt-0">
+                      {user?.github?.name}'s Links
+                    </h2>
+                    <UserAvatar user={user} />
+                  </div>
+                  <div className="w-2 h-[100px] rounded-full bg-muted fixed inset-x-0 top-1/2 translate-x-1/2 left-2" />
+                  <div className="mt-3 grid gap-2">
+                    <div className="w-max mx-auto">
+                      <Suspense fallback={<LinkCardPlaceholder />}>
+                        <Await
+                          errorElement={<LinkCardPlaceholder />}
+                          resolve={defaultLink}
+                        >
+                          {link => <LinkCard link={link} />}
+                        </Await>
+                      </Suspense>
+                    </div>
+                    {links.map((link, i) => (
+                      <div key={link.shortCode} className="w-max">
+                        <LinkCard link={link} />
+                      </div>
+                    ))}
+                  </div>
+                </Drawer.Content>
+              </Drawer.Portal>
+            </Drawer.Root>
+          )}
         </div>
       </Section>
     </>
