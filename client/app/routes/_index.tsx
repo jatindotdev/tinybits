@@ -128,7 +128,7 @@ export default function Index() {
           <UsageTooltip show={links.length > 2 && !user}>
             <Form method="post">
               <div className="relative flex items-center">
-                {(!(links.length > 2) || user) && (
+                {(!(links.length > 2) || user) && !isServerDown && (
                   <Link2Icon className="size-5 text-gray-400 absolute inset-x-0 ml-2.5" />
                 )}
                 <input
@@ -143,7 +143,7 @@ export default function Index() {
                   className={cn(
                     'peer block w-full rounded-lg border-border bg-white p-2.5 pr-12 shadow-lg focus:border-primary focus:outline-none focus:ring-0 sm:text-sm border-[1.5px] transition duration-300',
                     {
-                      'pl-10': !(links.length > 2) || user,
+                      'pl-10': (!(links.length > 2) || user) && !isServerDown,
                     }
                   )}
                   name="url"
