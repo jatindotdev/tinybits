@@ -185,7 +185,7 @@ export default function Index() {
               </motion.div>
             ))}
           </div>
-          {user && (
+          {user && links.length > 0 && (
             <Drawer.Root direction="right" shouldScaleBackground>
               <Drawer.Trigger asChild>
                 <Button className="mt-3 gap-1 absolute right-0">
