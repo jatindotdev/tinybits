@@ -204,9 +204,7 @@ export default function Index() {
                   <div className="w-2 h-[100px] rounded-full bg-muted fixed inset-x-0 top-1/2 translate-x-1/2 left-2" />
                   <div className="mt-3 grid gap-2">
                     {links.map(link => (
-                      <div key={link.shortCode} className="w-max">
-                        <LinkCard link={link} />
-                      </div>
+                      <LinkCard link={link} key={link.shortCode} />
                     ))}
                   </div>
                 </Drawer.Content>
