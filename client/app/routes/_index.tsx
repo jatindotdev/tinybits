@@ -4,13 +4,13 @@ import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from '@remix-run/node';
-import { Form, useActionData, useLoaderData } from '@remix-run/react';
+import { Await, Form, useActionData, useLoaderData } from '@remix-run/react';
 import { motion } from 'framer-motion';
 import { ArrowRightIcon, CornerDownLeftIcon, Link2Icon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Drawer } from 'vaul';
-import { LinkCard } from '~/components/links/link-card';
+import { LinkCard, LinkCardPlaceholder } from '~/components/links/link-card';
 import { Nav } from '~/components/shared/nav';
 import { Button } from '~/components/ui/button';
 import { Section } from '~/components/ui/section';
@@ -70,10 +70,7 @@ export default function Index() {
       toast.success('Link created successfully!', {
         id: toastCreatingLink,
       });
-      setLinks(links => {
-        const [defaultLink, ...rest] = links;
-        return [defaultLink, actionResult, ...rest];
-      });
+      setLinks(links => [actionResult, ...links]);
     }
   }, [actionResult]);
 
@@ -92,13 +89,6 @@ export default function Index() {
       setIsServerDown(isServerDown);
     })();
   });
-
-  useEffect(() => {
-    (async () => {
-      const link = await defaultLink;
-      setLinks(links => [link, ...links]);
-    })();
-  }, [defaultLink]);
 
   return (
     <>
@@ -125,16 +115,16 @@ export default function Index() {
           </Button>
         </div>
         <div className="mx-auto w-full max-w-lg px-2.5 sm:px-0 relative">
-          <UsageTooltip show={links.length > 2 && !user}>
+          <UsageTooltip show={links.length > 1 && !user}>
             <Form method="post">
               <div className="relative flex items-center">
-                {(!(links.length > 2) || user) && !isServerDown && (
+                {(!(links.length > 1) || user) && !isServerDown && (
                   <Link2Icon className="size-5 text-gray-400 absolute inset-x-0 ml-2.5" />
                 )}
                 <input
                   type="url"
                   placeholder={
-                    (links.length > 2 && !user) || isServerDown
+                    (links.length > 1 && !user) || isServerDown
                       ? 'Shorten your link'
                       : 'https://github.com/jatindotdev'
                   }
@@ -143,16 +133,16 @@ export default function Index() {
                   className={cn(
                     'peer block w-full rounded-lg border-border bg-white p-2.5 pr-12 shadow-lg focus:border-primary focus:outline-none focus:ring-0 sm:text-sm border-[1.5px] transition duration-300',
                     {
-                      'pl-10': (!(links.length > 2) || user) && !isServerDown,
+                      'pl-10': (!(links.length > 1) || user) && !isServerDown,
                     }
                   )}
                   name="url"
-                  disabled={(links.length > 2 && !user) || isServerDown}
+                  disabled={(links.length > 1 && !user) || isServerDown}
                 />
                 <button
                   type="submit"
                   className="hover:border-primary hover:text-primary peer-focus:text-primary absolute inset-y-0 right-0 my-1.5 mr-1.5 flex w-10 items-center justify-center rounded-md border-[1.5px] border-border font-sans text-sm font-medium text-gray-400 transition duration-300"
-                  disabled={(links.length > 2 && !user) || isServerDown}
+                  disabled={(links.length > 1 && !user) || isServerDown}
                 >
                   <CornerDownLeftIcon className="size-5" strokeWidth={1.5} />
                 </button>
@@ -160,7 +150,26 @@ export default function Index() {
             </Form>
           </UsageTooltip>
           <div className="mt-3 grid gap-2">
-            {links.slice(0, 3).map((link, i) => (
+            <motion.div
+              animate={{
+                ...FRAMER_MOTION_LIST_ITEM_VARIANTS.show,
+                transition: {
+                  ...FRAMER_MOTION_LIST_ITEM_VARIANTS.show.transition,
+                  delay: 0.2,
+                },
+              }}
+              initial={FRAMER_MOTION_LIST_ITEM_VARIANTS.hidden}
+            >
+              <Suspense fallback={<LinkCardPlaceholder />}>
+                <Await
+                  errorElement={<LinkCardPlaceholder />}
+                  resolve={defaultLink}
+                >
+                  {link => <LinkCard link={link} />}
+                </Await>
+              </Suspense>
+            </motion.div>
+            {links.slice(0, 2).map((link, i) => (
               <motion.div
                 key={link.shortCode}
                 animate={{
