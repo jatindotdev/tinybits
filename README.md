@@ -25,9 +25,9 @@ A URL shortener powered by Golang and Remix for efficient link management
 
 `TinyBits` consists of two parts:
 
-`api` - A Golang server that handles the URL shortening and redirection
+[`api`](/api) - A Golang server that handles the URL shortening and redirection
 <br>
-`client` - A Remix app that provides a UI for managing the shortened URLs
+[`client`](/client) - A Remix app that provides a UI for managing the shortened URLs
 
 ## Getting Started
 
