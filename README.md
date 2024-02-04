@@ -19,14 +19,14 @@ A URL shortener powered by Golang and Remix for efficient link management
 </p>
 
 > [!IMPORTANT]
-> WIP! I am building it bit by bit and It's not ready yet
+> The client part is WIP!
 
 ## Structure
 
 `TinyBits` consists of two parts:
 
 [`api`](/api) - A Golang server that handles the URL shortening and redirection
-<br>
+<br/>
 [`client`](/client) - A Remix app that provides a UI for managing the shortened URLs
 
 ## Getting Started
