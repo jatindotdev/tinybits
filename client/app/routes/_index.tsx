@@ -17,7 +17,7 @@ import { Section } from '~/components/ui/section';
 import { UsageTooltip } from '~/components/usage-tooltip';
 import { UserAvatar } from '~/components/user-avatar';
 import { healthCheck } from '~/lib/api/fetcher';
-import { getLinkByShortCode } from '~/lib/api/links';
+import { createShortLink, getLinkByShortCode } from '~/lib/api/links';
 import type { Link as LinkType } from '~/lib/types';
 import { cn } from '~/lib/utils';
 import { authenticator } from '~/service/auth.server';
@@ -35,21 +35,10 @@ export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const url = String(formData.get('url'));
 
-  await new Promise(resolve => setTimeout(resolve, 1500));
+  const shortCode = await createShortLink(url);
+  const link = await getLinkByShortCode(shortCode);
 
-  return {
-    enabled: true,
-    createdAt: new Date().toISOString(),
-    creatorIpAddress: '127.0.0.1',
-    expiresAt: '2024-01-26T09:00:00.000Z',
-    hasExpiration: false,
-    hasPassword: false,
-    originalURL: url,
-    password: '',
-    shortCode: 'jatindotdev',
-    updatedAt: new Date().toISOString(),
-    visits: 0,
-  } as LinkType;
+  return link;
 }
 
 const FRAMER_MOTION_LIST_ITEM_VARIANTS = {

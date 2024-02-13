@@ -14,3 +14,10 @@ export const getRedirectUrlByShortCode = async (shortCode: string) => {
   }>();
   return res.link;
 };
+
+export const createShortLink = async (url: string) => {
+  const res = await api.post('link', { json: { originalUrl: url } }).json<{
+    shortCode: string;
+  }>();
+  return res.shortCode;
+};
