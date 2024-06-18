@@ -11,6 +11,7 @@ import {
 import { Toaster } from '~/components/ui/sonner';
 import { Background } from './components/background';
 import { TooltipProvider } from './components/ui/tooltip';
+import { Analytics } from '@vercel/analytics/react';
 import styles from './tailwind.css';
 
 export const links: LinksFunction = () => [
@@ -112,6 +113,7 @@ export default function App() {
           <Toaster />
           <Background />
           <Outlet />
+          <Analytics />
           <ScrollRestoration />
           <Scripts />
           <LiveReload />
