@@ -19,7 +19,7 @@ A URL shortener powered by Golang and Remix for efficient link management
 </p>
 
 > [!IMPORTANT]
-> The client part is WIP!
+> A hobby project!
 
 ## Structure
 
